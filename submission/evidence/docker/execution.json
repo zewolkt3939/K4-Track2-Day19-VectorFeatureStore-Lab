@@ -1,0 +1,16 @@
+{
+  "03_search_api_benchmark": {
+    "status": "PASS",
+    "seconds": 83.64,
+    "executed_cells": 6,
+    "total_code_cells": 6,
+    "error": null
+  },
+  "04_feast_feature_store": {
+    "status": "PASS",
+    "seconds": 28.74,
+    "executed_cells": 7,
+    "total_code_cells": 7,
+    "error": null
+  }
+}

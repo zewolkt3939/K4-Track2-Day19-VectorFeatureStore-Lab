@@ -71,8 +71,9 @@ for i, args in enumerate(planner.plan(demo_q), 1):
 # ## 3. Đo: single-shot vs agentic, **cùng ngân sách truy xuất**
 #
 # Đây là chỗ dễ đo gian lận nhất. Nếu agent được lấy 32 doc còn single-shot chỉ
-# 16, agent thắng vì *ngân sách*, không phải vì *chiến lược*. Ở đây cả hai đều
-# lấy đúng **16 document** — chỉ khác cách chia.
+# 16, agent thắng vì *ngân sách*, không phải vì *chiến lược*. Ở đây cả hai có
+# ngân sách **tối đa 16 document slots**. Phép chia nguyên có thể để thừa slot;
+# bảng báo cả tổng slot thực tế, kể cả retry, để kiểm chứng giới hạn.
 #
 # Ngoài `recall`, ta đo thêm **`balance`**: trong 16 doc lấy về, hai vế của câu
 # hỏi được phủ đều đến đâu (1.00 = đều hoàn hảo, 0.00 = bỏ hẳn một vế).
@@ -83,7 +84,7 @@ BUDGET = 16
 
 
 def evaluate(agent, label):
-    rec, bal, calls, ms = [], [], [], []
+    rec, bal, calls, ms, requested = [], [], [], [], []
     for q in queries:
         r = agent.answer(q["question"])
         truth, got = set(q["relevant_doc_ids"]), set(r.doc_ids)
@@ -92,8 +93,12 @@ def evaluate(agent, label):
         bal.append(min(a, b) / max(1, max(a, b)))
         calls.append(r.n_calls)
         ms.append(r.latency_ms)
+        requested.append(sum(c.args["top_k"] for c in r.trace))
     n = len(queries)
     print(f"{label:<14}{sum(rec)/n:8.3f}{sum(bal)/n:9.2f}{sum(calls)/n:8.1f}{sum(ms)/n:9.1f}")
+    print(f"  requested doc slots (including retries): mean={sum(requested)/n:.1f}, max={max(requested)}")
+    if max(requested) > BUDGET:
+        print("  WARN — retries exceeded 16 slots; this run is not a strict equal-budget comparison")
     return sum(rec) / n
 
 

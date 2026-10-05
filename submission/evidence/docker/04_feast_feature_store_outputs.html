@@ -1,0 +1,54 @@
+<!doctype html><html lang="vi"><meta charset="utf-8">
+<title>04_feast_feature_store — executed evidence</title>
+<style>body{max-width:1160px;margin:24px auto;padding:0 24px;background:#f6f8fb;color:#162033;font:16px Arial,sans-serif}
+h1{font-size:28px}h2{font-size:18px;color:#174c79}section{background:white;border:1px solid #ccd6e3;border-radius:8px;padding:10px 20px;margin:14px 0}
+pre{font:14px Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}a{color:#174c79}</style>
+<h1>04_feast_feature_store</h1>
+<p>Minh chứng từ output notebook đã thực thi — Python 3.12 · docker · dữ liệu tổng hợp.</p>
+<p><a href="04_feast_feature_store.html">Notebook đầy đủ</a> · <a href="04_feast_feature_store.txt">Log gốc</a></p>
+<section><h2>1. Sinh dữ liệu offline (Parquet) cho 3 feature views — In [2]</h2><pre>Wrote 3 Parquet sources to D:\Ai Thuc chien\All Lab\K4-Track2-Day19-VectorFeatureStore-Lab\app\feast_repo_docker\data
+  item_popularity.parquet  9.7 KB
+  query_velocity.parquet  2.3 KB
+  user_profile.parquet  2.8 KB
+Uploaded PostgreSQL table: lab19.item_popularity
+Uploaded PostgreSQL table: lab19.query_velocity
+Uploaded PostgreSQL table: lab19.user_profile
+</pre></section><section><h2>2. `feast apply` — register 3 feature views với metadata registry — In [3]</h2><pre>STDOUT:
+No project found in the repository. Using project name lab19_docker defined in feature_store.yaml
+Applying changes for project lab19_docker
+Deploying infrastructure for user_profile_features
+Deploying infrastructure for query_velocity_features
+Deploying infrastructure for item_popularity_features
+
+</pre></section><section><h2>3. `feast materialize` — load offline → online — In [4]</h2><pre>Materializing 3 feature views from 2026-10-02 04:53:53+00:00 to 2026-10-05 04:53:53+00:00 into the redis online store.
+
+user_profile_features:
+query_velocity_features:
+item_popularity_features:
+
+materialize-incremental: Materializing 3 feature views to 2026-10-05 04:53:54+00:00 into the redis online store.
+
+user_profile_features from 2026-10-05 04:53:53+00:00 to 2026-10-05 04:53:54+00:00:
+query_velocity_features from 2026-10-05 04:53:53+00:00 to 2026-10-05 04:53:54+00:00:
+item_popularity_features from 2026-10-05 04:53:53+00:00 to 2026-10-05 04:53:54+00:00:
+ 
+feature-views list: NAME                      ENTITIES    TYPE         ENABLED    STATE
+user_profile_features     {&#x27;user&#x27;}    FeatureView  Yes        AVAILABLE_ONLINE
+query_velocity_features   {&#x27;user&#x27;}    FeatureView  Yes        AVAILABLE_ONLINE
+item_popularity_features  {&#x27;item&#x27;}    FeatureView  Yes        AVAILABLE_ONLINE
+
+</pre></section><section><h2>4. Online lookup — đo latency — In [5]</h2><pre>Registered feature views: [&#x27;item_popularity_features&#x27;, &#x27;query_velocity_features&#x27;, &#x27;user_profile_features&#x27;]
+Item online lookup: {&#x27;doc_id&#x27;: [&#x27;item_0001&#x27;], &#x27;click_count_24h&#x27;: [13]}
+Single lookup: 3.42ms
+{&#x27;user_id&#x27;: &#x27;u_001&#x27;, &#x27;topic_affinity&#x27;: &#x27;cloud&#x27;, &#x27;reading_speed_wpm&#x27;: 187, &#x27;preferred_language&#x27;: &#x27;vi&#x27;, &#x27;queries_last_hour&#x27;: 11, &#x27;distinct_topics_24h&#x27;: 4}
+</pre></section><section><h2>5. Batch latency benchmark (100 lookups, P99) — In [6]</h2><pre>Online lookup latency over 100 calls:
+  P50 = 0.84ms
+  P95 = 1.21ms
+  P99 = 1.75ms
+PASS — online lookup P99 &lt; 10ms (1.75ms)
+</pre></section><section><h2>6. PIT join (offline) — đảm bảo no data leakage — In [7]</h2><pre>  user_id     event_timestamp  reading_speed_wpm topic_affinity
+0   u_001 2026-10-05 02:53:53                170       security
+1   u_002 2026-10-05 03:53:53                194       security
+2   u_003 2026-10-05 04:53:53                201       database
+PASS — PIT u_001=170/security, online u_001=187/cloud; future profile excluded
+</pre></section></html>

@@ -1,0 +1,9 @@
+﻿{
+    "os":  "Windows",
+    "docker_verified":  true,
+    "podman_installed":  false,
+    "apple_container_installed":  false,
+    "podman_status":  "NOT_TESTED: CLI not installed",
+    "apple_status":  "NOT_APPLICABLE: requires macOS on Apple silicon",
+    "wsl_kali_podman_installed":  false
+}

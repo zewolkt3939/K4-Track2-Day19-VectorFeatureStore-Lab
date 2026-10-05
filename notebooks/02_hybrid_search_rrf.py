@@ -19,10 +19,11 @@
 # %%
 import _setup  # noqa: F401
 import json
+import os
 import statistics
 from pathlib import Path
 
-from fastembed import TextEmbedding
+from app.embeddings import Embedder
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct
 from rank_bm25 import BM25Okapi
@@ -40,11 +41,16 @@ tokenized = [(d["title"] + " " + d["text"]).lower().split() for d in docs]
 bm25 = BM25Okapi(tokenized)
 
 # Vector
-embedder = TextEmbedding(model_name="BAAI/bge-small-en-v1.5")
-client = QdrantClient(":memory:")
+embedder = Embedder()
+print("Embedding backend:", embedder.backend, embedder.model_name, embedder.dim)
+server_mode = os.environ.get("QDRANT_MODE") == "server"
+COLLECTION = "lab19_nb2_" + embedder.backend if server_mode else "lab19"
+client = QdrantClient(url=os.environ.get("QDRANT_URL", "http://127.0.0.1:6333")) if server_mode else QdrantClient(":memory:")
+if client.collection_exists(COLLECTION):
+    client.delete_collection(COLLECTION)
 client.create_collection(
-    collection_name="lab19",
-    vectors_config=VectorParams(size=384, distance=Distance.COSINE),
+    collection_name=COLLECTION,
+    vectors_config=VectorParams(size=embedder.dim, distance=Distance.COSINE),
 )
 BATCH = 64
 points = []
@@ -57,7 +63,9 @@ for start in range(0, len(docs), BATCH):
             id=start + i, vector=v.tolist(),
             payload={"doc_id": d["doc_id"], "topic": d["topic"]},
         ))
-client.upsert(collection_name="lab19", points=points)
+client.upsert(collection_name=COLLECTION, points=points, wait=True)
+print("Qdrant runtime:", "server" if server_mode else "memory", "collection:", COLLECTION)
+assert client.count(COLLECTION, exact=True).count == 1000
 print(f"BM25 + vector indices ready ({len(docs)} docs)")
 
 # %% [markdown]
@@ -76,12 +84,12 @@ def search_keyword(query: str, top_k: int = TOP_K) -> list[str]:
 
 def search_semantic(query: str, top_k: int = TOP_K) -> list[str]:
     q_vec = next(embedder.embed([query])).tolist()
-    res = client.query_points(collection_name="lab19", query=q_vec, limit=top_k)
+    res = client.query_points(collection_name=COLLECTION, query=q_vec, limit=top_k)
     return [p.payload["doc_id"] for p in res.points]
 
 
 # %% [markdown]
-# ## 3. TODO — implement Reciprocal Rank Fusion
+# ## 3. Implement Reciprocal Rank Fusion
 #
 # Công thức (deck §3):
 #
@@ -100,7 +108,7 @@ def search_hybrid(query: str, top_k: int = TOP_K, rrf_k: int = RRF_K) -> list[st
     kw_ids = search_keyword(query, depth)
     sem_ids = search_semantic(query, depth)
 
-    # TODO: implement RRF fusion below.
+    # Fuse both ranked lists using one-based ranks.
     # Hint: dict[doc_id, float] cộng 1/(rrf_k + rank) từ mỗi retriever.
     # rank starts at 1, not 0.
     rrf: dict[str, float] = {}
@@ -146,7 +154,9 @@ for q in golden:
 print(f"Precision@10 (avg over {len(golden)} queries):")
 print(f"  Keyword (BM25)   : {statistics.mean(p_kw):.1%}")
 print(f"  Semantic (vector): {statistics.mean(p_sem):.1%}")
-print(f"  Hybrid  (RRF=60) : {statistics.mean(p_hyb):.1%}   <- should win")
+print(f"  Hybrid  (RRF=60) : {statistics.mean(p_hyb):.1%}")
+print("PASS — hybrid beats both" if statistics.mean(p_hyb) > max(statistics.mean(p_kw), statistics.mean(p_sem))
+      else "WARN — hybrid does not beat both on this measured model/corpus")
 
 # %% [markdown]
 # ## 5. Slice theo loại query

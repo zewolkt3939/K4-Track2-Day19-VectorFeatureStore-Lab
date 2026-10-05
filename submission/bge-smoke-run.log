@@ -1,0 +1,31 @@
+Loading real model: BAAI/bge-m3
+PASS: shape, finite values, unit norm (3, 1024)
+{
+  "status": "PASS",
+  "model": "BAAI/bge-m3",
+  "dimension": 1024,
+  "provider": "sentence-transformers",
+  "load_and_first_batch_seconds": 24.026627200000803,
+  "query_round_trip_ms": [
+    239.42770000576274,
+    198.24579999840353
+  ],
+  "matches": [
+    {
+      "query": "co giãn tài nguyên khi lượng truy cập tăng",
+      "expected_id": 0,
+      "top_id": 0,
+      "score": 0.57901394
+    },
+    {
+      "query": "chống đăng nhập trái phép bằng nhiều bước xác minh",
+      "expected_id": 1,
+      "top_id": 1,
+      "score": 0.65296835
+    }
+  ],
+  "scope": "3 documents / 2 queries: real inference + Qdrant server; not a latency benchmark"
+}
+D:\Ai Thuc chien\All Lab\K4-Track2-Day19-VectorFeatureStore-Lab\.venv\Lib\site-packages\huggingface_hub\file_download.py:143: UserWarning: `huggingface_hub` cache-system uses symlinks by default to efficiently store duplicated files but your machine does not support them in D:\Ai Thuc chien\All Lab\K4-Track2-Day19-VectorFeatureStore-Lab\data\hf_cache\hub\models--BAAI--bge-m3. Caching files will still work but in a degraded version that might require more space on your disk. This warning can be disabled by setting the `HF_HUB_DISABLE_SYMLINKS_WARNING` environment variable. For more details, see https://huggingface.co/docs/huggingface_hub/how-to-cache#limitations.
+To support symlinks on Windows, you either need to activate Developer Mode or to run Python as an administrator. In order to activate developer mode, see this article: https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development
+  warnings.warn(message)

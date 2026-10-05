@@ -1,0 +1,29 @@
+<!doctype html><html lang="vi"><meta charset="utf-8">
+<title>05_filtered_search — executed evidence</title>
+<style>body{max-width:1160px;margin:24px auto;padding:0 24px;background:#f6f8fb;color:#162033;font:16px Arial,sans-serif}
+h1{font-size:28px}h2{font-size:18px;color:#174c79}section{background:white;border:1px solid #ccd6e3;border-radius:8px;padding:10px 20px;margin:14px 0}
+pre{font:14px Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}a{color:#174c79}</style>
+<h1>05_filtered_search</h1>
+<p>Minh chứng từ output notebook đã thực thi — Python 3.12 · Lite · BGE-small · dữ liệu tổng hợp.</p>
+<p><a href="05_filtered_search.html">Notebook đầy đủ</a> · <a href="05_filtered_search.txt">Log gốc</a></p>
+<section><h2>1. Xây index có metadata — In [2]</h2><pre>docs: 1000   vectors: (1000, 384)
+payload mẫu: {&#x27;doc_id&#x27;: &#x27;frontend_074&#x27;, &#x27;topic&#x27;: &#x27;frontend&#x27;, &#x27;tenant&#x27;: &#x27;globex&#x27;, &#x27;access&#x27;: &#x27;public&#x27;, &#x27;published&#x27;: &#x27;2023-11-04&#x27;}
+</pre></section><section><h2>2. Recall cliff theo độ chọn lọc của filter — In [3]</h2><pre>filter               sel%    post    fANN  post_ms  fann_ms
+không filter        100.0    1.00    1.00      3.4      nan
+access=internal      23.6    0.20    1.00      3.5     66.4
+tenant=acme          31.9    0.20    1.00      3.5     15.6
+published ≥ 2026     13.5    0.20    1.00      2.4     14.8
+acme AND ≥2026        3.8    0.00    1.00      3.2     15.5
+</pre></section><section><h2>3. &quot;Cứ lấy nhiều hơn thì sao?&quot; — mua lại recall bằng over-fetch — In [4]</h2><pre>selectivity = 3.8%  của 1000 doc
+
+  fetch_k   recall   % corpus quét
+       10     0.03              1%
+       50     0.27              5%
+      200     0.80             20%
+      500     1.00             50%
+     1000     1.00            100%
+     fANN     1.00              1%
+</pre></section><section><h2>4. Bài test bắt buộc trước khi lên production — In [5]</h2><pre>tenant=acme      sel= 31.9%  post=0.20  fANN=1.00
+tenant=globex    sel= 34.7%  post=0.60  fANN=1.00
+tenant=initech   sel= 33.4%  post=0.20  fANN=1.00
+</pre></section></html>

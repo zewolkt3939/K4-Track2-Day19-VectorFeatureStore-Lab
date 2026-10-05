@@ -35,29 +35,44 @@ def main() -> int:
     try:
         # ── 1. Qdrant server ────────────────────────────────────────────
         step("Qdrant server reachable on :6333")
-        assert can_reach("localhost", 6333), \
+        assert can_reach("127.0.0.1", 6333), \
             "Qdrant not reachable. Run `docker compose up -d` first."
         from qdrant_client import QdrantClient
-        client = QdrantClient(url="http://localhost:6333")
+        client = QdrantClient(url="http://127.0.0.1:6333")
         # Smoke: list collections (empty list is fine)
         cols = client.get_collections()
         print(f"    Qdrant collections: {len(cols.collections)}")
 
         # ── 2. Redis ────────────────────────────────────────────────────
         step("Redis reachable on :6379")
-        assert can_reach("localhost", 6379), "Redis not reachable."
+        assert can_reach("127.0.0.1", 6379), "Redis not reachable."
         import redis
-        r = redis.Redis(host="localhost", port=6379)
+        r = redis.Redis(host="127.0.0.1", port=6379, socket_connect_timeout=5, socket_timeout=5)
         assert r.ping(), "Redis PING failed"
 
         # ── 3. Postgres ─────────────────────────────────────────────────
         step("Postgres reachable on :5432")
-        assert can_reach("localhost", 5432), "Postgres not reachable."
+        assert can_reach("127.0.0.1", 5432), "Postgres not reachable."
         import psycopg
-        with psycopg.connect("postgresql://feast:feast@localhost:5432/feast_offline") as conn:
+        with psycopg.connect("postgresql://feast:feast@127.0.0.1:5432/feast_offline", connect_timeout=5) as conn:
             with conn.cursor() as cur:
                 cur.execute("SELECT 1")
                 assert cur.fetchone() == (1,)
+                cur.execute("SELECT COUNT(*) FROM lab19.user_profile")
+                assert cur.fetchone()[0] == 101
+
+        step("Feast uses PostgreSQL sources and Redis online serving")
+        from feast import FeatureStore
+        fs = FeatureStore(repo_path=str(ROOT / "app/feast_repo_docker"))
+        assert fs.config.online_store.type == "redis"
+        assert fs.config.offline_store.type == "postgres"
+        assert len(fs.list_feature_views()) == 3
+        values = fs.get_online_features(
+            features=["user_profile_features:reading_speed_wpm"],
+            entity_rows=[{"user_id": "u_001"}],
+        ).to_dict()
+        assert values["reading_speed_wpm"] == [187], values
+        print("    Real Redis lookup:", values)
 
         # ── 4. Corpus seeded ────────────────────────────────────────────
         step("Corpus + golden set present")
@@ -69,7 +84,7 @@ def main() -> int:
         sys.path.insert(0, str(ROOT))
         from app import main as app_main  # noqa: F401
 
-        print("\nAll checks passed — docker stack is ready. Run `make api`.")
+        print("\nAll checks passed — Qdrant + Postgres + Feast + Redis verified.")
         print("  Qdrant dashboard: http://localhost:6333/dashboard")
         return 0
     except Exception as exc:  # noqa: BLE001

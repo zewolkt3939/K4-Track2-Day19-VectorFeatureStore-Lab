@@ -1,0 +1,26 @@
+--- Cell 1, execution 1 ---
+--- Cell 3, execution 2 ---
+{'ready': True, 'n_docs': 1000}
+
+--- Cell 5, execution 3 ---
+latency_ms: 21.9
+top-3 hits:
+       cloud_016  score=0.0325  Điện toán đám mây: tự động mở rộng theo lưu lượng
+       cloud_072  score=0.0323  Điện toán đám mây: tự động mở rộng theo lưu lượng
+       cloud_053  score=0.0315  Điện toán đám mây: tự động mở rộng theo lưu lượng
+
+--- Cell 7, execution 4 ---
+  mode            P50      P95      P99  P99(wall)
+
+  keyword       2.7ms    5.0ms    6.2ms     10.0ms
+
+  semantic     17.0ms   37.0ms   42.1ms     45.6ms
+
+  hybrid       24.0ms   41.5ms   48.6ms     51.8ms
+
+--- Cell 9, execution 5 ---
+Hybrid P99 server-side: 48.6ms
+PASS — hybrid P99 < 50ms (48.6ms)
+
+--- Cell 11, execution 6 ---
+API server stopped

@@ -1,0 +1,9 @@
+{
+  "02_hybrid_search_rrf": {
+    "status": "PASS",
+    "seconds": 494.27,
+    "executed_cells": 6,
+    "total_code_cells": 6,
+    "error": null
+  }
+}

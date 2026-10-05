@@ -1,0 +1,49 @@
+--- Cell 1, execution 1 ---
+--- Cell 3, execution 2 ---
+Wrote 3 Parquet sources to D:\Ai Thuc chien\All Lab\K4-Track2-Day19-VectorFeatureStore-Lab\app\feast_repo\data
+  item_popularity.parquet  9.7 KB
+  query_velocity.parquet  2.3 KB
+  user_profile.parquet  2.8 KB
+
+--- Cell 5, execution 3 ---
+STDOUT:
+No project found in the repository. Using project name lab19 defined in feature_store.yaml
+Applying changes for project lab19
+Created project lab19
+Created entity item
+Created entity user
+Created feature view user_profile_features
+Created feature view item_popularity_features
+Created feature view query_velocity_features
+
+Created sqlite table lab19_item_popularity_features
+Created sqlite table lab19_query_velocity_features
+Created sqlite table lab19_user_profile_features
+
+
+
+--- Cell 7, execution 4 ---
+Materializing [1m[32m3[0m feature views to [1m[32m2026-10-05 03:18:38+00:00[0m into the [1m[32msqlite[0m online store.
+
+[1m[32muser_profile_features[0m from [1m[32m2026-09-05 03:18:50+00:00[0m to [1m[32m2026-10-05 03:18:38+00:00[0m:
+[1m[32mitem_popularity_features[0m from [1m[32m2026-10-04 03:18:50+00:00[0m to [1m[32m2026-10-05 03:18:38+00:00[0m:
+[1m[32mquery_velocity_features[0m from [1m[32m2026-10-05 02:18:50+00:00[0m to [1m[32m2026-10-05 03:18:38+00:00[0m:
+
+
+--- Cell 9, execution 5 ---
+Single lookup: 36.39ms
+{'user_id': 'u_001', 'preferred_language': 'vi', 'topic_affinity': 'cloud', 'reading_speed_wpm': 187, 'distinct_topics_24h': 4, 'queries_last_hour': 11}
+
+--- Cell 11, execution 6 ---
+Online lookup latency over 100 calls:
+  P50 = 0.32ms
+  P95 = 0.59ms
+  P99 = 1.59ms
+PASS — online lookup P99 < 10ms (1.59ms)
+
+--- Cell 13, execution 7 ---
+  user_id           event_timestamp  reading_speed_wpm topic_affinity
+0   u_003 2026-10-05 03:18:38+00:00                201       database
+1   u_002 2026-10-05 02:18:38+00:00                194       security
+
+ERROR: AssertionError: 

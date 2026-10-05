@@ -1,0 +1,38 @@
+﻿{
+    "query":  "cloud computing",
+    "mode":  "hybrid",
+    "top_k":  5,
+    "latency_ms":  20.79579999553971,
+    "hits":  [
+                 {
+                     "doc_id":  "cloud_016",
+                     "title":  "Äiá»n toÃ¡n ÄÃ¡m mÃ¢y: tá»± Äá»ng má» rá»ng theo lÆ°u lÆ°á»£ng",
+                     "text":  "Theo khuyáº¿n nghá» 2026, Äiá»n toÃ¡n ÄÃ¡m mÃ¢y ÄÃ²i há»i pháº£i tá»± Äá»ng má» rá»ng theo lÆ°u lÆ°á»£ng. CÃ¡c cÃ´ng cá»¥ phá» biáº¿n gá»m cloud, serverless, AWS. KhÃ¡i niá»m háº¡ táº§ng vÃ  khÃ´ng mÃ¡y chá»§ lÃ  ná»n táº£ng quan trá»ng. BÃ i viáº¿t nÃ y giáº£i thÃ­ch cÃ¡ch tá»± Äá»ng má» rá»ng theo lÆ°u lÆ°á»£ng má»t cÃ¡ch thá»±c táº¿, kÃ¨m vÃ­ dá»¥ minh hoáº¡ vá»i cloud vÃ  AWS.",
+                     "score":  0.030309988518943745
+                 },
+                 {
+                     "doc_id":  "data_eng_054",
+                     "title":  "Data engineering: CDC tá»« OLTP sang lakehouse",
+                     "text":  "Khi triá»n khai á» quy mÃ´ lá»n, data engineering ÄÃ²i há»i pháº£i CDC tá»« OLTP sang lakehouse. CÃ¡c cÃ´ng cá»¥ phá» biáº¿n gá»m lakehouse, Flink, schema evolution. KhÃ¡i niá»m cháº¥t lÆ°á»£ng dá»¯ liá»u vÃ  kho dá»¯ liá»u lÃ  ná»n táº£ng quan trá»ng. BÃ i viáº¿t nÃ y giáº£i thÃ­ch cÃ¡ch CDC tá»« OLTP sang lakehouse má»t cÃ¡ch thá»±c táº¿, kÃ¨m vÃ­ dá»¥ minh hoáº¡ vá»i lakehouse vÃ  schema evolution.",
+                     "score":  0.024422933730454205
+                 },
+                 {
+                     "doc_id":  "data_eng_011",
+                     "title":  "Data engineering: phÃ¢n vÃ¹ng theo ngÃ y Äá» tá»i Æ°u query",
+                     "text":  "Trong mÃ´i trÆ°á»ng production hiá»n Äáº¡i, data engineering ÄÃ²i há»i pháº£i phÃ¢n vÃ¹ng theo ngÃ y Äá» tá»i Æ°u query. CÃ¡c cÃ´ng cá»¥ phá» biáº¿n gá»m Kafka, dbt, schema evolution. KhÃ¡i niá»m kho dá»¯ liá»u vÃ  luá»ng dá»¯ liá»u lÃ  ná»n táº£ng quan trá»ng. BÃ i viáº¿t nÃ y giáº£i thÃ­ch cÃ¡ch phÃ¢n vÃ¹ng theo ngÃ y Äá» tá»i Æ°u query má»t cÃ¡ch thá»±c táº¿, kÃ¨m vÃ­ dá»¥ minh hoáº¡ vá»i Kafka vÃ  schema evolution.",
+                     "score":  0.0213939871636077
+                 },
+                 {
+                     "doc_id":  "data_eng_049",
+                     "title":  "Data engineering: Äáº£m báº£o cháº¥t lÆ°á»£ng dá»¯ liá»u vá»i kiá»m thá»­",
+                     "text":  "Äá» tá»i Æ°u chi phÃ­, data engineering ÄÃ²i há»i pháº£i Äáº£m báº£o cháº¥t lÆ°á»£ng dá»¯ liá»u vá»i kiá»m thá»­. CÃ¡c cÃ´ng cá»¥ phá» biáº¿n gá»m lakehouse, schema evolution, Delta Lake. KhÃ¡i niá»m chuyá»n Äá»i vÃ  luá»ng dá»¯ liá»u lÃ  ná»n táº£ng quan trá»ng. BÃ i viáº¿t nÃ y giáº£i thÃ­ch cÃ¡ch Äáº£m báº£o cháº¥t lÆ°á»£ng dá»¯ liá»u vá»i kiá»m thá»­ má»t cÃ¡ch thá»±c táº¿, kÃ¨m vÃ­ dá»¥ minh hoáº¡ vá»i lakehouse vÃ  Delta Lake.",
+                     "score":  0.019615384615384618
+                 },
+                 {
+                     "doc_id":  "data_eng_042",
+                     "title":  "Data engineering: schema evolution khÃ´ng phÃ¡ vá»¡ downstream",
+                     "text":  "Táº¡i cÃ¡c doanh nghiá»p cÃ´ng nghá» Viá»t Nam, data engineering ÄÃ²i há»i pháº£i schema evolution khÃ´ng phÃ¡ vá»¡ downstream. CÃ¡c cÃ´ng cá»¥ phá» biáº¿n gá»m Flink, dbt, Spark. KhÃ¡i niá»m chuyá»n Äá»i vÃ  cháº¥t lÆ°á»£ng dá»¯ liá»u lÃ  ná»n táº£ng quan trá»ng. BÃ i viáº¿t nÃ y giáº£i thÃ­ch cÃ¡ch schema evolution khÃ´ng phÃ¡ vá»¡ downstream má»t cÃ¡ch thá»±c táº¿, kÃ¨m vÃ­ dá»¥ minh hoáº¡ vá»i Flink vÃ  Spark.",
+                     "score":  0.018614718614718615
+                 }
+             ]
+}

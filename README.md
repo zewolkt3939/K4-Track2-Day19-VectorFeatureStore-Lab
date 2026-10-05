@@ -24,6 +24,42 @@ Build hybrid search API + Feast feature store hoàn chỉnh, đo Precision@10 v�
 
 ## Quick Start — Lite (recommended)
 
+### Full stack đã kiểm thử trên Windows
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\setup-docker.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\start-api-docker.ps1
+```
+
+Profile này dùng Qdrant server + PostgreSQL offline + Redis online thật,
+và BGE-small ONNX 384d cho CPU. BGE-M3 đã kiểm chứng riêng trên Windows
+bằng inference thật và Qdrant server. Xem [triển khai và rubric](submission/DEPLOYMENT.md)
+và output Docker trong `submission/evidence/docker/`. Thí nghiệm NB2 đa ngữ:
+`python scripts/run_notebooks.py --only 02 --backend multilingual-small`.
+
+### Windows PowerShell
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\setup-lite.ps1
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe scripts/run_notebooks.py
+```
+
+`setup-lite.ps1` tạo môi trường riêng trong `.venv`, sinh dữ liệu và đăng ký
+kernel `lab19` trong project. Không cần Bash hoặc Make. Runner chạy NB1–NB8
+theo thứ tự, giữ output trong `notebooks/*.ipynb`, xuất HTML/log vào
+`submission/evidence/`, và trả exit code khác 0 nếu notebook lỗi. Chạy lại
+một bài bằng `scripts/run_notebooks.py --only 03`. Chi tiết kết quả và cách
+đọc bài nằm trong `submission/LAB_REPORT.md`.
+
+Mở notebook để học và kiểm tra từng cell:
+
+```powershell
+.\.venv\Scripts\python.exe -m jupyter lab --notebook-dir=notebooks
+```
+
+Lệnh Bash dưới đây dành cho Linux/macOS hoặc môi trường tương thích.
+
 ```bash
 git clone https://github.com/<your-username>/K4-Track2-Day19-VectorFeatureStore-Lab.git
 cd K4-Track2-Day19-VectorFeatureStore-Lab
@@ -110,7 +146,8 @@ make container-down ARGS=--wipe   # dừng + xoá volume
 > ngay. `container-up.sh` xử lý bằng `PGDATA=/var/lib/postgresql/data/pgdata`
 > (thư mục con của mount point). Docker không gặp lỗi này vì volume của nó rỗng.
 >
-> Đã kiểm chứng end-to-end trên macOS 26.5.1 / Apple silicon với
+> Ghi chú từ template gốc (chưa xác minh trong phiên Windows này):
+> đã kiểm chứng end-to-end trên macOS 26.5.1 / Apple silicon với
 > `container` 1.2.2: cả 3 service chạy, `verify_docker.py` xanh, index 1000 doc
 > vào Qdrant server 12.9 s.
 

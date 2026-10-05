@@ -1,0 +1,29 @@
+{
+  "notebooks": {
+    "status": "PASS",
+    "count": 8
+  },
+  "smoke": {
+    "status": "PASS",
+    "exit_code": 0
+  },
+  "benchmark": {
+    "status": "PASS",
+    "exit_code": 0
+  },
+  "bonus": {
+    "status": "PASS",
+    "exit_code": 0
+  },
+  "tests": {
+    "status": "PASS",
+    "count": 46,
+    "skipped": 0,
+    "seconds": 11.866
+  },
+  "source_consistency": {
+    "status": "PASS",
+    "notebooks": 8,
+    "executed_code_cells": 51
+  }
+}

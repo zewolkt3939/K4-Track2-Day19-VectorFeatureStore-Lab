@@ -28,6 +28,8 @@
 # %%
 import _setup  # noqa: F401
 import subprocess
+import sys
+from datetime import datetime, timezone
 import warnings
 from pathlib import Path
 
@@ -158,10 +160,10 @@ print(f"\n'lift ảo' sẽ mất khi lên production: {auc_lat - auc_pit:+.3f} A
 
 # %%
 repo = ROOT / "app" / "feast_repo_ondemand"
-subprocess.run(["python", str(ROOT / "scripts" / "gen_spend.py")], check=True,
+subprocess.run([sys.executable, str(ROOT / "scripts" / "gen_spend.py")], check=True,
                capture_output=True)
 subprocess.run(["feast", "apply"], cwd=repo, check=True, capture_output=True)
-subprocess.run(["feast", "materialize-incremental", "2027-01-01T00:00:00"],
+subprocess.run(["feast", "materialize-incremental", datetime.now(timezone.utc).isoformat()],
                cwd=repo, check=True, capture_output=True)
 print("feast apply + materialize OK")
 
@@ -182,6 +184,11 @@ out = fs.get_online_features(
 for i in range(3):
     print(f"user={out['user_id'][i]}  avg7d={out['avg_amount_7d'][i]:>12,.0f}  "
           f"ratio={out['amount_vs_avg'][i]:6.2f}  spike={out['is_spike'][i]}")
+
+assert out["amount_vs_avg"][0] != out["amount_vs_avg"][1]
+assert out["is_spike"][0] == 0 and out["is_spike"][1] == 1
+assert leakage_experiment(events, "session_id").set_index("encoding").loc["target-naive", "gap"] > 0.30
+print("PASS — target leakage measured; request amount changes the on-demand feature")
 
 # %% [markdown]
 # Hai dòng đầu là **cùng một user, cùng một feature đã lưu** — chỉ khác `amount`

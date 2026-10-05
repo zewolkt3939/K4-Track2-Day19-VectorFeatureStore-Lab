@@ -37,6 +37,8 @@ class BackendSpec:
 
 
 BACKENDS: dict[str, BackendSpec] = {
+    "multilingual-small": BackendSpec("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2", 384, "fastembed",
+                                      "Multilingual ONNX, CPU-friendly ~220 MB"),
     "fastembed": BackendSpec("BAAI/bge-small-en-v1.5", 384, "fastembed",
                              "English-focused; weak on Vietnamese paraphrase (that is the NB2 lesson)"),
     "multilingual": BackendSpec("intfloat/multilingual-e5-large", 1024, "fastembed",
@@ -77,9 +79,14 @@ class Embedder:
         p = self.spec.provider
         if p == "fastembed":
             from fastembed import TextEmbedding
-            self._impl = TextEmbedding(model_name=self.spec.model)
+            self._impl = TextEmbedding(
+                model_name=self.spec.model,
+                threads=int(os.getenv("FASTEMBED_THREADS", "2")),
+            )
         elif p == "sentence-transformers":
             try:
+                import torch
+                torch.set_num_threads(int(os.getenv("TORCH_NUM_THREADS", "2")))
                 from sentence_transformers import SentenceTransformer
             except ImportError as exc:                       # pragma: no cover
                 raise ImportError(

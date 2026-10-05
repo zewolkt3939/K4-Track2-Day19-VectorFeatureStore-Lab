@@ -1,0 +1,18 @@
+{
+  "python": "3.12.6",
+  "platform": "Windows-11-10.0.22631-SP0",
+  "packages": {
+    "fastembed": "0.8.1",
+    "qdrant-client": "1.19.1",
+    "feast": "0.66.0",
+    "fastapi": "0.142.2",
+    "onnxruntime": "1.30.0",
+    "numpy": "2.5.3",
+    "pandas": "2.3.3"
+  },
+  "data_sha256": {
+    "corpus_vn.jsonl": "30241d917aed9f2a4ed5d2bf3603c3e90c89fe8c86568397d1e8e37f9997e15a",
+    "golden_set.jsonl": "70e0a9cd658ef8d319d0e147f76ae480bb5abde0239ab2c57bee997589762ebc",
+    "agent_queries.jsonl": "a745a6a23f1ce6c583aa02729cd59992e873ff37cecac1766415c144f241e409"
+  }
+}

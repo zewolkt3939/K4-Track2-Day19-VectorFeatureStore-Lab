@@ -1,0 +1,164 @@
+--- Cell 1, execution 1 ---
+--- Cell 3, execution 2 ---
+Wrote 3 Parquet sources to D:\Ai Thuc chien\All Lab\K4-Track2-Day19-VectorFeatureStore-Lab\app\feast_repo\data
+  item_popularity.parquet  9.7 KB
+  query_velocity.parquet  2.3 KB
+  user_profile.parquet  2.8 KB
+
+--- Cell 5, execution 3 ---
+STDOUT:
+No project found in the repository. Using project name lab19 defined in feature_store.yaml
+Applying changes for project lab19
+Updated feature view item_popularity_features
+	batch_source: type: BATCH_FILE
+timestamp_field: "event_timestamp"
+file_options {
+  uri: "D:\\Ai Thuc chien\\All Lab\\K4-Track2-Day19-VectorFeatureStore-Lab\\app\\feast_repo\\data\\item_popularity.parquet"
+}
+data_source_class_type: "feast.infra.offline_stores.file_source.FileSource"
+name: "item_popularity_source"
+meta {
+  created_timestamp {
+    seconds: 1791175615
+    nanos: 567253000
+  }
+  last_updated_timestamp {
+    seconds: 1791175615
+    nanos: 567253000
+  }
+}
+ -> type: BATCH_FILE
+timestamp_field: "event_timestamp"
+file_options {
+  uri: "D:\\Ai Thuc chien\\All Lab\\K4-Track2-Day19-VectorFeatureStore-Lab\\app\\feast_repo\\data\\item_popularity.parquet"
+}
+data_source_class_type: "feast.infra.offline_stores.file_source.FileSource"
+name: "item_popularity_source"
+meta {
+  created_timestamp {
+    seconds: 1791176020
+    nanos: 622619000
+  }
+  last_updated_timestamp {
+    seconds: 1791176020
+    nanos: 622619000
+  }
+}
+
+Updated feature view user_profile_features
+	batch_source: type: BATCH_FILE
+timestamp_field: "event_timestamp"
+file_options {
+  uri: "D:\\Ai Thuc chien\\All Lab\\K4-Track2-Day19-VectorFeatureStore-Lab\\app\\feast_repo\\data\\user_profile.parquet"
+}
+data_source_class_type: "feast.infra.offline_stores.file_source.FileSource"
+name: "user_profile_source"
+meta {
+  created_timestamp {
+    seconds: 1791175615
+    nanos: 566723000
+  }
+  last_updated_timestamp {
+    seconds: 1791175615
+    nanos: 566723000
+  }
+}
+ -> type: BATCH_FILE
+timestamp_field: "event_timestamp"
+file_options {
+  uri: "D:\\Ai Thuc chien\\All Lab\\K4-Track2-Day19-VectorFeatureStore-Lab\\app\\feast_repo\\data\\user_profile.parquet"
+}
+data_source_class_type: "feast.infra.offline_stores.file_source.FileSource"
+name: "user_profile_source"
+meta {
+  created_timestamp {
+    seconds: 1791176020
+    nanos: 622619000
+  }
+  last_updated_timestamp {
+    seconds: 1791176020
+    nanos: 622619000
+  }
+}
+
+Updated feature view query_velocity_features
+	batch_source: type: BATCH_FILE
+timestamp_field: "event_timestamp"
+file_options {
+  uri: "D:\\Ai Thuc chien\\All Lab\\K4-Track2-Day19-VectorFeatureStore-Lab\\app\\feast_repo\\data\\query_velocity.parquet"
+}
+data_source_class_type: "feast.infra.offline_stores.file_source.FileSource"
+name: "query_velocity_source"
+meta {
+  created_timestamp {
+    seconds: 1791175615
+    nanos: 567253000
+  }
+  last_updated_timestamp {
+    seconds: 1791175615
+    nanos: 567253000
+  }
+}
+ -> type: BATCH_FILE
+timestamp_field: "event_timestamp"
+file_options {
+  uri: "D:\\Ai Thuc chien\\All Lab\\K4-Track2-Day19-VectorFeatureStore-Lab\\app\\feast_repo\\data\\query_velocity.parquet"
+}
+data_source_class_type: "feast.infra.offline_stores.file_source.FileSource"
+name: "query_velocity_source"
+meta {
+  created_timestamp {
+    seconds: 1791176020
+    nanos: 623139000
+  }
+  last_updated_timestamp {
+    seconds: 1791176020
+    nanos: 623139000
+  }
+}
+
+
+No changes to infrastructure
+
+
+--- Cell 7, execution 4 ---
+Materializing [1m[32m3[0m feature views from [1m[32m2026-10-02 04:53:31+00:00[0m to [1m[32m2026-10-05 04:53:31+00:00[0m into the [1m[32msqlite[0m online store.
+
+[1m[32muser_profile_features[0m:
+[1m[32mitem_popularity_features[0m:
+[1m[32mquery_velocity_features[0m:
+
+
+materialize-incremental: Materializing [1m[32m3[0m feature views to [1m[32m2026-10-05 04:53:32+00:00[0m into the [1m[32msqlite[0m online store.
+
+[1m[32muser_profile_features[0m from [1m[32m2026-10-05 04:53:31+00:00[0m to [1m[32m2026-10-05 04:53:32+00:00[0m:
+[1m[32mitem_popularity_features[0m from [1m[32m2026-10-05 04:53:31+00:00[0m to [1m[32m2026-10-05 04:53:32+00:00[0m:
+[1m[32mquery_velocity_features[0m from [1m[32m2026-10-05 04:53:31+00:00[0m to [1m[32m2026-10-05 04:53:32+00:00[0m:
+ 
+
+feature-views list: NAME                      ENTITIES    TYPE         ENABLED    STATE
+user_profile_features     {'user'}    FeatureView  Yes        AVAILABLE_ONLINE
+item_popularity_features  {'item'}    FeatureView  Yes        AVAILABLE_ONLINE
+query_velocity_features   {'user'}    FeatureView  Yes        AVAILABLE_ONLINE
+
+
+--- Cell 9, execution 5 ---
+Registered feature views: ['item_popularity_features', 'query_velocity_features', 'user_profile_features']
+
+Item online lookup: {'doc_id': ['item_0001'], 'click_count_24h': [13]}
+Single lookup: 5.33ms
+{'user_id': 'u_001', 'reading_speed_wpm': 187, 'topic_affinity': 'cloud', 'preferred_language': 'vi', 'distinct_topics_24h': 4, 'queries_last_hour': 11}
+
+--- Cell 11, execution 6 ---
+Online lookup latency over 100 calls:
+  P50 = 0.36ms
+  P95 = 0.53ms
+  P99 = 0.82ms
+PASS — online lookup P99 < 10ms (0.82ms)
+
+--- Cell 13, execution 7 ---
+  user_id           event_timestamp  reading_speed_wpm topic_affinity
+0   u_001 2026-10-05 02:53:31+00:00                170       security
+1   u_003 2026-10-05 04:53:31+00:00                201       database
+2   u_002 2026-10-05 03:53:31+00:00                194       security
+PASS — PIT u_001=170/security, online u_001=187/cloud; future profile excluded

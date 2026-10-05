@@ -1,0 +1,58 @@
+{
+  "01_embeddings_index": {
+    "status": "PASS",
+    "seconds": 56.12,
+    "executed_cells": 7,
+    "total_code_cells": 7,
+    "error": null
+  },
+  "02_hybrid_search_rrf": {
+    "status": "PASS",
+    "seconds": 92.18,
+    "executed_cells": 6,
+    "total_code_cells": 6,
+    "error": null
+  },
+  "03_search_api_benchmark": {
+    "status": "PASS",
+    "seconds": 68.12,
+    "executed_cells": 6,
+    "total_code_cells": 6,
+    "error": null
+  },
+  "04_feast_feature_store": {
+    "status": "PASS",
+    "seconds": 38.8,
+    "executed_cells": 7,
+    "total_code_cells": 7,
+    "error": null
+  },
+  "05_filtered_search": {
+    "status": "PASS",
+    "seconds": 57.8,
+    "executed_cells": 5,
+    "total_code_cells": 5,
+    "error": null
+  },
+  "06_agent_retrieval": {
+    "status": "PASS",
+    "seconds": 66.66,
+    "executed_cells": 7,
+    "total_code_cells": 7,
+    "error": null
+  },
+  "07_semantic_cache": {
+    "status": "PASS",
+    "seconds": 5.18,
+    "executed_cells": 5,
+    "total_code_cells": 5,
+    "error": null
+  },
+  "08_feature_engineering": {
+    "status": "PASS",
+    "seconds": 19.55,
+    "executed_cells": 8,
+    "total_code_cells": 8,
+    "error": null
+  }
+}

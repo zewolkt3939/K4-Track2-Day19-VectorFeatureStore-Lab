@@ -158,6 +158,9 @@ safe = SemanticCache(client=client, embedder=embedder, threshold=0.70,
 safe.put("acme", "doanh thu quý 3 của chúng tôi", "Doanh thu ACME quý 3: 4,2 tỷ VND.")
 blocked = safe.get("globex", "doanh thu quý 3 của chúng tôi")
 print("\nnamespaced=True  → GLOBEX nhận được:", blocked.answer if blocked else "MISS (đúng)")
+assert stolen is not None and stolen.tenant == "acme"
+assert blocked is None, "Cross-tenant cache isolation failed"
+print("PASS — reproduced the leak and verified tenant isolation")
 
 # %% [markdown]
 # Không có exception, không có stack trace, không có dòng log đỏ. Chỉ là một

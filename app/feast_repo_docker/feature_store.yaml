@@ -1,0 +1,16 @@
+project: lab19_docker
+provider: local
+registry: registry.db
+online_store:
+  type: redis
+  connection_string: 127.0.0.1:6379
+offline_store:
+  type: postgres
+  host: 127.0.0.1
+  port: 5432
+  database: feast_offline
+  user: feast
+  password: feast
+  db_schema: lab19
+  sslmode: disable
+entity_key_serialization_version: 3

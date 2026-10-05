@@ -1,0 +1,44 @@
+--- Cell 1, execution 1 ---
+D:\Ai Thuc chien\All Lab\K4-Track2-Day19-VectorFeatureStore-Lab\.venv\Lib\site-packages\tqdm\auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+
+--- Cell 3, execution 2 ---
+Embedding backend: multilingual-small sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 384
+
+Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+D:\Ai Thuc chien\All Lab\K4-Track2-Day19-VectorFeatureStore-Lab\.venv\Lib\site-packages\huggingface_hub\file_download.py:149: UserWarning: `huggingface_hub` cache-system uses symlinks by default to efficiently store duplicated files but your machine does not support them in D:\Ai Thuc chien\All Lab\K4-Track2-Day19-VectorFeatureStore-Lab\data\model_cache. Caching files will still work but in a degraded version that might require more space on your disk. This warning can be disabled by setting the `HF_HUB_DISABLE_SYMLINKS_WARNING` environment variable. For more details, see https://huggingface.co/docs/huggingface_hub/how-to-cache#limitations.
+To support symlinks on Windows, you either need to activate Developer Mode or to run Python as an administrator. In order to activate developer mode, see this article: https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development
+  warnings.warn(message)
+
+D:\Ai Thuc chien\All Lab\K4-Track2-Day19-VectorFeatureStore-Lab\.venv\Lib\site-packages\huggingface_hub\file_download.py:149: UserWarning: `huggingface_hub` cache-system uses symlinks by default to efficiently store duplicated files but your machine does not support them in D:\Ai Thuc chien\All Lab\K4-Track2-Day19-VectorFeatureStore-Lab\data\model_cache\models--qdrant--paraphrase-multilingual-MiniLM-L12-v2-onnx-Q. Caching files will still work but in a degraded version that might require more space on your disk. This warning can be disabled by setting the `HF_HUB_DISABLE_SYMLINKS_WARNING` environment variable. For more details, see https://huggingface.co/docs/huggingface_hub/how-to-cache#limitations.
+To support symlinks on Windows, you either need to activate Developer Mode or to run Python as an administrator. In order to activate developer mode, see this article: https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development
+  warnings.warn(message)
+Fetching 5 files:  20%|██        | 1/5 [00:01<00:06,  1.62s/it]
+Fetching 5 files:  80%|████████  | 4/5 [00:10<00:02,  2.59s/it]
+Fetching 5 files: 100%|██████████| 5/5 [00:27<00:00,  6.71s/it]
+Fetching 5 files: 100%|██████████| 5/5 [00:27<00:00,  5.49s/it]
+
+
+BM25 + vector indices ready (1000 docs)
+
+--- Cell 5, execution 3 ---
+--- Cell 7, execution 4 ---
+Query: co giãn linh hoạt theo nhu cầu sử dụng
+  keyword top-3:  ['mobile_082', 'mobile_093', 'mobile_092']
+  semantic top-3: ['mobile_097', 'mobile_077', 'mobile_095']
+  hybrid top-3:   ['mobile_064', 'mobile_052', 'mobile_012']
+
+--- Cell 9, execution 5 ---
+Precision@10 (avg over 50 queries):
+  Keyword (BM25)   : 77.8%
+  Semantic (vector): 75.8%
+  Hybrid  (RRF=60) : 80.6%
+PASS — hybrid beats both
+
+--- Cell 11, execution 6 ---
+  type           n       kw     sem     hyb
+  exact         15   96.7%  90.0%  98.0%
+  paraphrase    15   33.3%  48.0%  44.0%
+  mixed         20   97.0%  86.0%  95.0%

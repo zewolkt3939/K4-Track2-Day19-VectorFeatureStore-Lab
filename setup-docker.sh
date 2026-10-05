@@ -109,6 +109,8 @@ python scripts/seed_corpus.py
 echo "  · seeding advanced-mission data (NB6 + NB8)…"
 python scripts/gen_agent_queries.py
 python scripts/gen_spend.py
+python scripts/configure_docker.py
+python scripts/run_notebooks.py --profile docker --only 03 04
 python scripts/verify_docker.py
 
 cat <<EOF

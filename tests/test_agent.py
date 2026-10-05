@@ -40,6 +40,17 @@ def test_use_filters_false_emits_no_filters():
     assert all(a.topic is None and a.since_year is None for a in plan)
 
 
+def test_three_intents_use_exact_budget():
+    plan = RuleBasedPlanner(budget=16).plan("cloud costs và network routing và database tuning")
+    assert [p.top_k for p in plan] == [6, 5, 5]
+
+
+def test_more_intents_than_slots_preserves_intents():
+    plan = RuleBasedPlanner(budget=2).plan("cloud costs và network routing và database tuning")
+    assert sum(p.top_k for p in plan) == 2
+    assert "database tuning" in plan[-1].query
+
+
 def test_agent_relaxes_a_starving_filter(index):
     tool = RetrievalTool(index)
 

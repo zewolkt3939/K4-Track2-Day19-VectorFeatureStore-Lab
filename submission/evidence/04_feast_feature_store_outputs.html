@@ -1,0 +1,158 @@
+<!doctype html><html lang="vi"><meta charset="utf-8">
+<title>04_feast_feature_store — executed evidence</title>
+<style>body{max-width:1160px;margin:24px auto;padding:0 24px;background:#f6f8fb;color:#162033;font:16px Arial,sans-serif}
+h1{font-size:28px}h2{font-size:18px;color:#174c79}section{background:white;border:1px solid #ccd6e3;border-radius:8px;padding:10px 20px;margin:14px 0}
+pre{font:14px Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}a{color:#174c79}</style>
+<h1>04_feast_feature_store</h1>
+<p>Minh chứng từ output notebook đã thực thi — Python 3.12 · Lite · BGE-small · dữ liệu tổng hợp.</p>
+<p><a href="04_feast_feature_store.html">Notebook đầy đủ</a> · <a href="04_feast_feature_store.txt">Log gốc</a></p>
+<section><h2>1. Sinh dữ liệu offline (Parquet) cho 3 feature views — In [2]</h2><pre>Wrote 3 Parquet sources to D:\Ai Thuc chien\All Lab\K4-Track2-Day19-VectorFeatureStore-Lab\app\feast_repo\data
+  item_popularity.parquet  9.7 KB
+  query_velocity.parquet  2.3 KB
+  user_profile.parquet  2.8 KB
+</pre></section><section><h2>2. `feast apply` — register 3 feature views với metadata registry — In [3]</h2><pre>STDOUT:
+No project found in the repository. Using project name lab19 defined in feature_store.yaml
+Applying changes for project lab19
+Updated feature view item_popularity_features
+	batch_source: type: BATCH_FILE
+timestamp_field: &quot;event_timestamp&quot;
+file_options {
+  uri: &quot;D:\\Ai Thuc chien\\All Lab\\K4-Track2-Day19-VectorFeatureStore-Lab\\app\\feast_repo\\data\\item_popularity.parquet&quot;
+}
+data_source_class_type: &quot;feast.infra.offline_stores.file_source.FileSource&quot;
+name: &quot;item_popularity_source&quot;
+meta {
+  created_timestamp {
+    seconds: 1791175615
+    nanos: 567253000
+  }
+  last_updated_timestamp {
+    seconds: 1791175615
+    nanos: 567253000
+  }
+}
+ -&gt; type: BATCH_FILE
+timestamp_field: &quot;event_timestamp&quot;
+file_options {
+  uri: &quot;D:\\Ai Thuc chien\\All Lab\\K4-Track2-Day19-VectorFeatureStore-Lab\\app\\feast_repo\\data\\item_popularity.parquet&quot;
+}
+data_source_class_type: &quot;feast.infra.offline_stores.file_source.FileSource&quot;
+name: &quot;item_popularity_source&quot;
+meta {
+  created_timestamp {
+    seconds: 1791176020
+    nanos: 622619000
+  }
+  last_updated_timestamp {
+    seconds: 1791176020
+    nanos: 622619000
+  }
+}
+
+Updated feature view user_profile_features
+	batch_source: type: BATCH_FILE
+timestamp_field: &quot;event_timestamp&quot;
+file_options {
+  uri: &quot;D:\\Ai Thuc chien\\All Lab\\K4-Track2-Day19-VectorFeatureStore-Lab\\app\\feast_repo\\data\\user_profile.parquet&quot;
+}
+data_source_class_type: &quot;feast.infra.offline_stores.file_source.FileSource&quot;
+name: &quot;user_profile_source&quot;
+meta {
+  created_timestamp {
+    seconds: 1791175615
+    nanos: 566723000
+  }
+  last_updated_timestamp {
+    seconds: 1791175615
+    nanos: 566723000
+  }
+}
+ -&gt; type: BATCH_FILE
+timestamp_field: &quot;event_timestamp&quot;
+file_options {
+  uri: &quot;D:\\Ai Thuc chien\\All Lab\\K4-Track2-Day19-VectorFeatureStore-Lab\\app\\feast_repo\\data\\user_profile.parquet&quot;
+}
+data_source_class_type: &quot;feast.infra.offline_stores.file_source.FileSource&quot;
+name: &quot;user_profile_source&quot;
+meta {
+  created_timestamp {
+    seconds: 1791176020
+    nanos: 622619000
+  }
+  last_updated_timestamp {
+    seconds: 1791176020
+    nanos: 622619000
+  }
+}
+
+Updated feature view query_velocity_features
+	batch_source: type: BATCH_FILE
+timestamp_field: &quot;event_timestamp&quot;
+file_options {
+  uri: &quot;D:\\Ai Thuc chien\\All Lab\\K4-Track2-Day19-VectorFeatureStore-Lab\\app\\feast_repo\\data\\query_velocity.parquet&quot;
+}
+data_source_class_type: &quot;feast.infra.offline_stores.file_source.FileSource&quot;
+name: &quot;query_velocity_source&quot;
+meta {
+  created_timestamp {
+    seconds: 1791175615
+    nanos: 567253000
+  }
+  last_updated_timestamp {
+    seconds: 1791175615
+    nanos: 567253000
+  }
+}
+ -&gt; type: BATCH_FILE
+timestamp_field: &quot;event_timestamp&quot;
+file_options {
+  uri: &quot;D:\\Ai Thuc chien\\All Lab\\K4-Track2-Day19-VectorFeatureStore-Lab\\app\\feast_repo\\data\\query_velocity.parquet&quot;
+}
+data_source_class_type: &quot;feast.infra.offline_stores.file_source.FileSource&quot;
+name: &quot;query_velocity_source&quot;
+meta {
+  created_timestamp {
+    seconds: 1791176020
+    nanos: 623139000
+  }
+  last_updated_timestamp {
+    seconds: 1791176020
+    nanos: 623139000
+  }
+}
+
+
+No changes to infrastructure
+
+</pre></section><section><h2>3. `feast materialize` — load offline → online — In [4]</h2><pre>Materializing 3 feature views from 2026-10-02 04:53:31+00:00 to 2026-10-05 04:53:31+00:00 into the sqlite online store.
+
+user_profile_features:
+item_popularity_features:
+query_velocity_features:
+
+materialize-incremental: Materializing 3 feature views to 2026-10-05 04:53:32+00:00 into the sqlite online store.
+
+user_profile_features from 2026-10-05 04:53:31+00:00 to 2026-10-05 04:53:32+00:00:
+item_popularity_features from 2026-10-05 04:53:31+00:00 to 2026-10-05 04:53:32+00:00:
+query_velocity_features from 2026-10-05 04:53:31+00:00 to 2026-10-05 04:53:32+00:00:
+ 
+feature-views list: NAME                      ENTITIES    TYPE         ENABLED    STATE
+user_profile_features     {&#x27;user&#x27;}    FeatureView  Yes        AVAILABLE_ONLINE
+item_popularity_features  {&#x27;item&#x27;}    FeatureView  Yes        AVAILABLE_ONLINE
+query_velocity_features   {&#x27;user&#x27;}    FeatureView  Yes        AVAILABLE_ONLINE
+
+</pre></section><section><h2>4. Online lookup — đo latency — In [5]</h2><pre>Registered feature views: [&#x27;item_popularity_features&#x27;, &#x27;query_velocity_features&#x27;, &#x27;user_profile_features&#x27;]
+Item online lookup: {&#x27;doc_id&#x27;: [&#x27;item_0001&#x27;], &#x27;click_count_24h&#x27;: [13]}
+Single lookup: 5.33ms
+{&#x27;user_id&#x27;: &#x27;u_001&#x27;, &#x27;reading_speed_wpm&#x27;: 187, &#x27;topic_affinity&#x27;: &#x27;cloud&#x27;, &#x27;preferred_language&#x27;: &#x27;vi&#x27;, &#x27;distinct_topics_24h&#x27;: 4, &#x27;queries_last_hour&#x27;: 11}
+</pre></section><section><h2>5. Batch latency benchmark (100 lookups, P99) — In [6]</h2><pre>Online lookup latency over 100 calls:
+  P50 = 0.36ms
+  P95 = 0.53ms
+  P99 = 0.82ms
+PASS — online lookup P99 &lt; 10ms (0.82ms)
+</pre></section><section><h2>6. PIT join (offline) — đảm bảo no data leakage — In [7]</h2><pre>  user_id           event_timestamp  reading_speed_wpm topic_affinity
+0   u_001 2026-10-05 02:53:31+00:00                170       security
+1   u_003 2026-10-05 04:53:31+00:00                201       database
+2   u_002 2026-10-05 03:53:31+00:00                194       security
+PASS — PIT u_001=170/security, online u_001=187/cloud; future profile excluded
+</pre></section></html>

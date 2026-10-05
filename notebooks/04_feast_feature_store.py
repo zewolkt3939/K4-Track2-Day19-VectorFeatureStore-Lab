@@ -17,13 +17,14 @@
 # %%
 import _setup  # noqa: F401
 import subprocess
+import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import polars as pl
 
 REPO_ROOT = Path(_setup.__file__).resolve().parent.parent
-FEAST_DIR = REPO_ROOT / "app" / "feast_repo"
+FEAST_DIR = Path(os.environ.get("FEAST_REPO", str(REPO_ROOT / "app" / "feast_repo")))
 FEAST_DATA = FEAST_DIR / "data"
 FEAST_DATA.mkdir(exist_ok=True)
 
@@ -69,12 +70,27 @@ def make_query_velocity(n_users: int = 100) -> pl.DataFrame:
     })
 
 
-make_user_profile().write_parquet(FEAST_DATA / "user_profile.parquet")
+profile = make_user_profile()
+# Keep two versions for u_001: historical lookup sees the older profile,
+# online serving sees the newest. This makes the temporal boundary observable.
+older_profile = profile.filter(pl.col("user_id") == "u_001").with_columns(
+    pl.lit(170).cast(pl.Int64).alias("reading_speed_wpm"),
+    pl.lit("security").alias("topic_affinity"),
+    pl.lit(NOW - timedelta(hours=3)).alias("event_timestamp"),
+)
+profile.vstack(older_profile).write_parquet(FEAST_DATA / "user_profile.parquet")
 make_item_popularity().write_parquet(FEAST_DATA / "item_popularity.parquet")
 make_query_velocity().write_parquet(FEAST_DATA / "query_velocity.parquet")
 print(f"Wrote 3 Parquet sources to {FEAST_DATA}")
 for p in sorted(FEAST_DATA.glob("*.parquet")):
     print(f"  {p.name}  {p.stat().st_size/1024:.1f} KB")
+if os.environ.get("FEAST_PROFILE") == "docker":
+    from sqlalchemy import create_engine
+    engine = create_engine("postgresql+psycopg://feast:feast@127.0.0.1:5432/feast_offline", connect_args={"connect_timeout": 5})
+    for p in sorted(FEAST_DATA.glob("*.parquet")):
+        pl.read_parquet(p).to_pandas().to_sql(p.stem, engine, schema="lab19", if_exists="replace", index=False)
+        print("Uploaded PostgreSQL table: lab19." + p.stem)
+    engine.dispose()
 
 # %% [markdown]
 # ## 2. `feast apply` — register 3 feature views với metadata registry
@@ -96,15 +112,17 @@ if res.stderr:
 assert res.returncode == 0, f"feast apply failed: {res.stderr}"
 
 # %% [markdown]
-# ## 3. `feast materialize-incremental` — load offline → online
+# ## 3. `feast materialize` — load offline → online
 #
 # Feast scan offline store cho mọi sự kiện đến `now`, ghi giá trị mới nhất
 # (per entity_key) vào online store. SQLite trong lite path; Redis trong docker path.
 
 # %%
-end_dt = NOW.strftime("%Y-%m-%dT%H:%M:%S")
+end_dt = NOW.isoformat()
 res = subprocess.run(
-    ["feast", "materialize-incremental", end_dt],
+    # Explicit bounded materialization is repeatable when regenerating the sources.
+    # An incremental watermark from a previous run could skip regenerated rows.
+    ["feast", "materialize", (NOW - timedelta(days=3)).isoformat(), end_dt],
     cwd=str(FEAST_DIR),
     capture_output=True, text=True, check=False,
 )
@@ -113,6 +131,15 @@ if res.stderr:
     print("STDERR (tail):")
     print(res.stderr[-500:])
 assert res.returncode == 0, f"materialize failed: {res.stderr}"
+res = subprocess.run(
+    ["feast", "materialize-incremental", (NOW + timedelta(seconds=1)).isoformat()],
+    cwd=str(FEAST_DIR), capture_output=True, text=True,
+)
+print("materialize-incremental:", res.stdout, res.stderr)
+assert res.returncode == 0, "incremental materialization failed"
+res = subprocess.run(["feast", "feature-views", "list"], cwd=str(FEAST_DIR), capture_output=True, text=True)
+print("feature-views list:", res.stdout)
+assert res.returncode == 0
 
 # %% [markdown]
 # ## 4. Online lookup — đo latency
@@ -127,6 +154,15 @@ import time
 from feast import FeatureStore
 
 fs = FeatureStore(repo_path=str(FEAST_DIR))
+registered = sorted(view.name for view in fs.list_feature_views())
+print("Registered feature views:", registered)
+assert registered == ["item_popularity_features", "query_velocity_features", "user_profile_features"]
+item_values = fs.get_online_features(
+    features=["item_popularity_features:click_count_24h"],
+    entity_rows=[{"doc_id": "item_0001"}],
+).to_dict()
+assert item_values["click_count_24h"][0] == 13
+print("Item online lookup:", item_values)
 
 REQUEST_FEATURES = [
     "user_profile_features:reading_speed_wpm",
@@ -147,7 +183,7 @@ print(f"Single lookup: {single_latency_ms:.2f}ms")
 print({k: v[0] for k, v in features.items()})
 
 # %% [markdown]
-# ## 5. TODO — Batch latency benchmark (100 lookups, P99)
+# ## 5. Batch latency benchmark (100 lookups, P99)
 
 # %%
 latencies: list[float] = []
@@ -196,6 +232,18 @@ historical = fs.get_historical_features(
     ],
 ).to_df()
 print(historical)
+
+# u_001 newer profile is NOW-1h; its event is NOW-2h.
+# Only the older NOW-3h snapshot may be returned.
+early = historical.loc[historical.user_id == "u_001", "reading_speed_wpm"]
+assert len(early) == 1 and early.iloc[0] == 170, "PIT join leaked a future profile"
+assert historical.loc[historical.user_id == "u_001", "topic_affinity"].iloc[0] == "security"
+assert historical.loc[historical.user_id == "u_002", "reading_speed_wpm"].iloc[0] == 194
+assert len(historical) == 3
+assert features["preferred_language"][0] == "vi"
+assert features["topic_affinity"][0] == "cloud"
+assert features["reading_speed_wpm"][0] == 187
+print("PASS — PIT u_001=170/security, online u_001=187/cloud; future profile excluded")
 
 # %% [markdown]
 # ## Deliverable evidence

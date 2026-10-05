@@ -6,15 +6,15 @@ Reports two tables:
 
 Hybrid uses Reciprocal Rank Fusion (RRF, k=60) over the two ranked lists.
 
-The rubric asserts hybrid strictly beats both pure modes on Precision@10 — the
-corpus + queries (data/corpus_vn.jsonl + data/golden_set.jsonl) are engineered
-to make this true. If hybrid does not win, your fusion implementation is wrong.
+The rubric targets hybrid beating both pure modes on Precision@10. Measure it:
+model language coverage and the corpus can affect that outcome even with correct RRF.
 
 Run via `make benchmark` or `python scripts/benchmark.py`.
 """
 from __future__ import annotations
 
 import json
+import argparse
 import statistics as stats
 import sys
 import time
@@ -39,6 +39,12 @@ def precision_at_k(retrieved_ids: list[str], relevant_ids: set[str], k: int = TO
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--reps", type=int, default=REPS_PER_QUERY)
+    parser.add_argument("--output", type=Path, help="Save machine-readable measurements")
+    args = parser.parse_args()
+    if args.reps < 1:
+        parser.error("--reps must be positive")
     print("Day 19 benchmark — keyword vs semantic vs hybrid")
     print("=" * 62)
 
@@ -97,10 +103,20 @@ def main() -> int:
     print()
 
     # ── Latency run (REPS reps × 50 queries) ────────────────────────────
-    print(f"Latency — P50 / P95 / P99 over {REPS_PER_QUERY * len(golden)} calls/mode")
+    measurements = {
+        "quality": {"keyword": avg_kw, "semantic": avg_sem, "hybrid": avg_hyb},
+        "slices": {t: {m: stats.mean(v) for m, v in values.items()} for t, values in by_mode.items()},
+        "calls_per_mode": args.reps * len(golden),
+        "latency_ms": {},
+        "embedding_model": searcher.embedder.model_name,
+        "embedding_dim": searcher.embedder.dim,
+    }
+    print(f"Latency — P50 / P95 / P99 over {args.reps * len(golden)} calls/mode")
     for mode in ("keyword", "semantic", "hybrid"):
+        for q in golden[:10]:
+            searcher.search(q["query"], mode=mode, top_k=TOP_K, rrf_k=RRF_K)
         latencies = []
-        for _ in range(REPS_PER_QUERY):
+        for _ in range(args.reps):
             for q in golden:
                 t = time.perf_counter()
                 searcher.search(q["query"], mode=mode, top_k=TOP_K, rrf_k=RRF_K)
@@ -111,7 +127,11 @@ def main() -> int:
         p95 = latencies[int(n * 0.95)]
         p99 = latencies[int(n * 0.99)]
         print(f"  {mode:9}: P50={p50:6.1f}ms  P95={p95:6.1f}ms  P99={p99:6.1f}ms")
+        measurements["latency_ms"][mode] = {"p50": p50, "p95": p95, "p99": p99}
     print()
+    if args.output:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(json.dumps(measurements, ensure_ascii=False, indent=2), encoding="utf-8")
 
     # ── Rubric assertion ────────────────────────────────────────────────
     if avg_hyb > avg_kw and avg_hyb > avg_sem:
@@ -120,7 +140,7 @@ def main() -> int:
         print(f"PASS — hybrid beats keyword by {delta_kw:+.1f}pp, semantic by {delta_sem:+.1f}pp")
         return 0
     print(f"FAIL — hybrid did NOT beat both pure modes (kw={avg_kw:.1%} sem={avg_sem:.1%} hyb={avg_hyb:.1%})")
-    print("       Check your RRF implementation: score(d) = sum_r 1/(k + rank_r(d)), k=60")
+    print("       Check model language coverage, corpus relevance, and one-based RRF ranks; retain this result.")
     return 1
 
 

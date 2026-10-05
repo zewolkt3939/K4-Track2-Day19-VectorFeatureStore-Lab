@@ -1,0 +1,60 @@
+--- Cell 1, execution 1 ---
+--- Cell 3, execution 2 ---
+Wrote 3 Parquet sources to D:\Ai Thuc chien\All Lab\K4-Track2-Day19-VectorFeatureStore-Lab\app\feast_repo_docker\data
+  item_popularity.parquet  9.7 KB
+  query_velocity.parquet  2.3 KB
+  user_profile.parquet  2.8 KB
+
+Uploaded PostgreSQL table: lab19.item_popularity
+Uploaded PostgreSQL table: lab19.query_velocity
+Uploaded PostgreSQL table: lab19.user_profile
+
+--- Cell 5, execution 3 ---
+STDOUT:
+No project found in the repository. Using project name lab19_docker defined in feature_store.yaml
+Applying changes for project lab19_docker
+Deploying infrastructure for user_profile_features
+Deploying infrastructure for query_velocity_features
+Deploying infrastructure for item_popularity_features
+
+
+--- Cell 7, execution 4 ---
+Materializing [1m[32m3[0m feature views from [1m[32m2026-10-02 04:53:53+00:00[0m to [1m[32m2026-10-05 04:53:53+00:00[0m into the [1m[32mredis[0m online store.
+
+[1m[32muser_profile_features[0m:
+[1m[32mquery_velocity_features[0m:
+[1m[32mitem_popularity_features[0m:
+
+
+materialize-incremental: Materializing [1m[32m3[0m feature views to [1m[32m2026-10-05 04:53:54+00:00[0m into the [1m[32mredis[0m online store.
+
+[1m[32muser_profile_features[0m from [1m[32m2026-10-05 04:53:53+00:00[0m to [1m[32m2026-10-05 04:53:54+00:00[0m:
+[1m[32mquery_velocity_features[0m from [1m[32m2026-10-05 04:53:53+00:00[0m to [1m[32m2026-10-05 04:53:54+00:00[0m:
+[1m[32mitem_popularity_features[0m from [1m[32m2026-10-05 04:53:53+00:00[0m to [1m[32m2026-10-05 04:53:54+00:00[0m:
+ 
+
+feature-views list: NAME                      ENTITIES    TYPE         ENABLED    STATE
+user_profile_features     {'user'}    FeatureView  Yes        AVAILABLE_ONLINE
+query_velocity_features   {'user'}    FeatureView  Yes        AVAILABLE_ONLINE
+item_popularity_features  {'item'}    FeatureView  Yes        AVAILABLE_ONLINE
+
+
+--- Cell 9, execution 5 ---
+Registered feature views: ['item_popularity_features', 'query_velocity_features', 'user_profile_features']
+Item online lookup: {'doc_id': ['item_0001'], 'click_count_24h': [13]}
+Single lookup: 3.42ms
+{'user_id': 'u_001', 'topic_affinity': 'cloud', 'reading_speed_wpm': 187, 'preferred_language': 'vi', 'queries_last_hour': 11, 'distinct_topics_24h': 4}
+
+--- Cell 11, execution 6 ---
+Online lookup latency over 100 calls:
+  P50 = 0.84ms
+  P95 = 1.21ms
+  P99 = 1.75ms
+PASS — online lookup P99 < 10ms (1.75ms)
+
+--- Cell 13, execution 7 ---
+  user_id     event_timestamp  reading_speed_wpm topic_affinity
+0   u_001 2026-10-05 02:53:53                170       security
+1   u_002 2026-10-05 03:53:53                194       security
+2   u_003 2026-10-05 04:53:53                201       database
+PASS — PIT u_001=170/security, online u_001=187/cloud; future profile excluded
