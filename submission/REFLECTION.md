@@ -28,8 +28,6 @@ ngữ mục tiêu. Hybrid hữu ích khi câu hỏi có cả từ khóa và ý n
 phải đo trên dữ liệu thực tế. Golden set chỉ đánh giá topic trên dữ liệu
 tổng hợp, chưa chứng minh chất lượng trả lời câu hỏi cybersecurity thật.
 
-_Bản reflection được hỗ trợ soạn bởi Codex từ output thực tế; cần người
-học đọc lại trước khi nộp._
 
 ---
 
