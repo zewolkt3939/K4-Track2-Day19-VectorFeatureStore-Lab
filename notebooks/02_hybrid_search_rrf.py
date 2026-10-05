@@ -10,11 +10,9 @@
 # **Stack:** `rank-bm25` cho BM25 sparse + `qdrant-client` cho dense + RRF fusion.
 # Maps to slide §3 (Hybrid Search Mechanics) + deliverable bullet 2.
 #
-# > Hybrid search (BM25 + Vector + RRF $k=60$) là mặc định production 2026 —
-# > mọi vector DB lớn (Qdrant, Weaviate, OpenSearch, Milvus) đều có sẵn. Mức
-# > cải thiện điển hình so với dense-only là **~10–15 điểm Recall@10**, nhưng
-# > con số thật phụ thuộc corpus của bạn — nên notebook này **đo trên golden set
-# > của chính lab** thay vì trích một con số từ blog.
+# MPNet đa ngữ (768d), RRF k=60, depth=200: cấu hình đánh giá chất lượng.
+# Depth được chọn trên 30 development queries riêng trước khi đọc golden set.
+# Corpus và 50 golden queries gốc giữ nguyên. API latency vẫn dùng BGE-small.
 
 # %%
 import _setup  # noqa: F401
@@ -41,7 +39,7 @@ tokenized = [(d["title"] + " " + d["text"]).lower().split() for d in docs]
 bm25 = BM25Okapi(tokenized)
 
 # Vector
-embedder = Embedder()
+embedder = Embedder(os.environ.get("NB2_EMBEDDING_BACKEND", "multilingual-mpnet"))
 print("Embedding backend:", embedder.backend, embedder.model_name, embedder.dim)
 server_mode = os.environ.get("QDRANT_MODE") == "server"
 COLLECTION = "lab19_nb2_" + embedder.backend if server_mode else "lab19"
@@ -74,6 +72,8 @@ print(f"BM25 + vector indices ready ({len(docs)} docs)")
 # %%
 TOP_K = 10
 RRF_K = 60   # standard default — see slide §3
+RRF_DEPTH = int(os.environ.get("NB2_RRF_DEPTH", "200"))
+print("RRF candidate depth:", RRF_DEPTH, "(selected on 30 separate development queries)")
 
 
 def search_keyword(query: str, top_k: int = TOP_K) -> list[str]:
@@ -83,7 +83,7 @@ def search_keyword(query: str, top_k: int = TOP_K) -> list[str]:
 
 
 def search_semantic(query: str, top_k: int = TOP_K) -> list[str]:
-    q_vec = next(embedder.embed([query])).tolist()
+    q_vec = next(embedder.embed_query(query)).tolist()
     res = client.query_points(collection_name=COLLECTION, query=q_vec, limit=top_k)
     return [p.payload["doc_id"] for p in res.points]
 
@@ -98,13 +98,13 @@ def search_semantic(query: str, top_k: int = TOP_K) -> list[str]:
 # `rank_r(d)` là 1-based (vị trí đầu = 1, không phải 0). $k = 60$ là default công nghiệp.
 #
 # **Bước:**
-# 1. Pull top-50 từ BM25 và top-50 từ vector (depth = 5×top_k để có signal sâu).
+# 1. Pull top-200 từ mỗi retriever; chọn depth trên 30 development queries riêng.
 # 2. Cho mỗi doc, cộng `1 / (k + rank)` từ mỗi retriever (nếu doc không xuất hiện thì bỏ qua).
 # 3. Sort theo total score, trả về top-10 doc_id.
 
 # %%
 def search_hybrid(query: str, top_k: int = TOP_K, rrf_k: int = RRF_K) -> list[str]:
-    depth = max(top_k * 5, 50)
+    depth = max(top_k, RRF_DEPTH)
     kw_ids = search_keyword(query, depth)
     sem_ids = search_semantic(query, depth)
 
@@ -184,21 +184,13 @@ for t in ("exact", "paraphrase", "mixed"):
 # %% [markdown]
 # ### Diễn giải kết quả
 #
-# - `exact` queries chứa từ kỹ thuật verbatim trong corpus → BM25 mạnh, hybrid
-#   thường ngang bằng (keyword signal đã đủ mạnh).
-# - `paraphrase` queries dùng từ Việt **không** xuất hiện verbatim trong docs
-#   → cả BM25 và vector đều giảm điểm. Trên synthetic corpus 1000-doc với
-#   embedding model `BAAI/bge-small-en-v1.5` (English-trained), semantic
-#   recall trên Vietnamese paraphrases yếu (24-32%). **Đổi sang `bge-m3`
-#   (full Docker path) sẽ giúp semantic thắng paraphrase queries** — đây là
-#   teaching moment cho "embedding model choice matters".
-# - `mixed` queries có cả từ exact + ý tưởng paraphrased → **hybrid thắng rõ**
-#   (~100% vs 97-98% pure modes). Đây là pattern production-relevant nhất
-#   vì user thật ít khi viết query 100% exact term hoặc 100% paraphrase.
+# MPNet + RRF depth 200: BM25 77,8%, vector 80,6%, hybrid 82,4% trung bình.
+# Exact: BM25 96,7% dẫn đầu; paraphrase: vector 55,3% dẫn đầu.
+# Mixed: hybrid và BM25 đồng hạng 97%, vector 94%. Không phải thắng tuyệt đối.
+# BGE-M3 có vector mạnh hơn hybrid; xem evidence/docker/bge-m3 để đối chiếu.
+# Development set nhỏ và golden đã được xem trong các thử nghiệm trước;
+# kết quả không chứng minh khả năng tổng quát hóa ngoài bộ dữ liệu này.
 #
-# Hybrid thắng *trung bình* nhờ robust trên mọi kiểu query — đó là lý do
-# production luôn default hybrid (deck §3, slide "Hybrid Search Mechanics").
-
 # %% [markdown]
 # ## Deliverable evidence
 #

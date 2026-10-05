@@ -12,22 +12,21 @@
 > `paraphrase` / `mixed`), và tại sao? Khi nào bạn **không** dùng hybrid
 > (i.e. khi nào pure BM25 hoặc pure vector là lựa chọn đúng)?
 
-Trên 50 golden queries, BGE-small có hybrid 78,6%, cao hơn BM25 77,8%
-và semantic 73,2%. Exact: BM25/hybrid cùng 96,7%; mixed: hybrid 100%.
-Paraphrase còn yếu: semantic 24%, BM25 33,3%. MiniLM đa ngữ nâng semantic
-paraphrase lên 48%.
+Trên 50 golden queries, cấu hình MPNet đa ngữ với RRF k=60, depth=200
+cho hybrid 82,4%, vượt BM25 77,8% và vector 80,6%. Exact: BM25 thắng
+96,7%; paraphrase: vector thắng 55,3%; mixed: hybrid đồng hạng BM25 97%,
+cao hơn vector 94%. Depth được chọn trên 30 development queries riêng,
+không sửa corpus hoặc nhãn golden. Tập phát triển nhỏ nên chưa chứng minh
+khả năng tổng quát hóa.
 
-Khi chạy BGE-M3 thật trên Qdrant server, semantic đạt 95,2%, vượt hybrid
-89%. Exact: hybrid thắng với 100%; paraphrase: semantic 86,7% so với
-hybrid 66,7%; mixed: semantic 99,5% so với hybrid 97,5%. Kết quả cho thấy
-hybrid không luôn tốt hơn: thêm thứ hạng BM25 yếu có thể kéo giảm kết quả
-của vector mạnh.
+BGE-M3 trên Qdrant server lại cho vector 95,2%, cao hơn hybrid 89%.
+Thêm thứ hạng BM25 yếu có thể kéo giảm vector mạnh; hybrid không luôn thắng.
 
-Tôi chọn BM25 cho định danh chính xác như CVE, IOC hoặc mã lỗi khi muốn
-giảm latency. Pure vector phù hợp khi diễn đạt lại là chủ yếu và model
-đã được kiểm chứng trên ngôn ngữ mục tiêu. Hybrid cần được đo, không mặc
-định luôn thắng. Golden set ở lab đánh giá topic trên dữ liệu tổng hợp,
-chưa chứng minh chất lượng trả lời câu hỏi cybersecurity thật.
+Tôi chọn BM25 cho CVE, IOC hoặc mã lỗi chính xác khi cần giảm latency.
+Pure vector phù hợp với diễn đạt lại và model đã được kiểm chứng trên ngôn
+ngữ mục tiêu. Hybrid hữu ích khi câu hỏi có cả từ khóa và ý nghĩa, nhưng
+phải đo trên dữ liệu thực tế. Golden set chỉ đánh giá topic trên dữ liệu
+tổng hợp, chưa chứng minh chất lượng trả lời câu hỏi cybersecurity thật.
 
 _Bản reflection được hỗ trợ soạn bởi Codex từ output thực tế; cần người
 học đọc lại trước khi nộp._

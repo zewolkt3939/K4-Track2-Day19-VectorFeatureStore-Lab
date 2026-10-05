@@ -20,6 +20,7 @@ opt-in via the environment.
 from __future__ import annotations
 
 import os
+import unicodedata
 from dataclasses import dataclass
 from typing import Iterable, Iterator
 
@@ -37,6 +38,12 @@ class BackendSpec:
 
 
 BACKENDS: dict[str, BackendSpec] = {
+    "fastembed-instruct": BackendSpec("BAAI/bge-small-en-v1.5", 384, "fastembed",
+                                     "BGE model-card retrieval instruction on queries only"),
+    "fastembed-vn-ascii": BackendSpec("BAAI/bge-small-en-v1.5", 384, "fastembed",
+                                     "Ablation: strip Vietnamese accents and map đ to d before English encoder"),
+    "multilingual-mpnet": BackendSpec("sentence-transformers/paraphrase-multilingual-mpnet-base-v2", 768, "fastembed",
+                                     "Multilingual MPNet ONNX; quality experiment"),
     "multilingual-small": BackendSpec("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2", 384, "fastembed",
                                       "Multilingual ONNX, CPU-friendly ~220 MB"),
     "fastembed": BackendSpec("BAAI/bge-small-en-v1.5", 384, "fastembed",
@@ -107,8 +114,16 @@ class Embedder:
             self._impl = OpenAI()
         return self._impl
 
+    def embed_query(self, query: str) -> Iterator[np.ndarray]:
+        if self.backend == "fastembed-instruct":
+            query = "Represent this sentence for searching relevant passages: " + query
+        yield from self.embed([query])
+
     def embed(self, texts: Iterable[str]) -> Iterator[np.ndarray]:
         texts = list(texts)
+        if self.backend == "fastembed-vn-ascii":
+            texts = ["".join(c for c in unicodedata.normalize("NFD", text.replace("đ", "d").replace("Đ", "D"))
+                             if unicodedata.category(c) != "Mn") for text in texts]
         impl = self._load()
         p = self.spec.provider
         if p == "fastembed":

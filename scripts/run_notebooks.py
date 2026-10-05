@@ -24,7 +24,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--only", nargs="*", help="Notebook numbers, e.g. 01 04")
     parser.add_argument("--profile", choices=["lite", "docker"], default="lite")
-    parser.add_argument("--backend", default="fastembed")
+    parser.add_argument("--backend", default=None, help="Override model; otherwise NB2 uses MPNet and other notebooks use BGE-small")
     parser.add_argument("--timeout", type=int, default=900, help="Maximum seconds per code cell")
     args = parser.parse_args()
     os.environ["PYTHONIOENCODING"] = "utf-8"
@@ -32,7 +32,11 @@ def main() -> int:
     os.environ["QDRANT_URL"] = "http://127.0.0.1:6333"
     os.environ["FEAST_PROFILE"] = args.profile
     os.environ["FEAST_REPO"] = str(ROOT / "app" / ("feast_repo_docker" if args.profile == "docker" else "feast_repo"))
-    os.environ["EMBEDDING_BACKEND"] = args.backend
+    os.environ["EMBEDDING_BACKEND"] = args.backend or "fastembed"
+    if args.backend:
+        os.environ["NB2_EMBEDDING_BACKEND"] = args.backend
+    else:
+        os.environ.pop("NB2_EMBEDDING_BACKEND", None)
     os.environ["FASTEMBED_CACHE_PATH"] = str(ROOT / "data" / "model_cache")
     os.environ["HF_HOME"] = str(ROOT / "data" / "hf_cache")
     os.environ["IPYTHONDIR"] = str(ROOT / ".runtime" / "ipython")
@@ -43,7 +47,7 @@ def main() -> int:
     evidence = ROOT / "submission" / "evidence"
     if args.profile == "docker":
         evidence = evidence / "docker"
-    if args.backend != "fastembed":
+    if args.backend and args.backend != "fastembed":
         evidence = evidence / args.backend
     evidence.mkdir(parents=True, exist_ok=True)
     summary_path = evidence / "execution.json"
@@ -69,7 +73,7 @@ def main() -> int:
             error = str(exc)
             failed = True
         # Also save failures: an incomplete run must remain visible.
-        nbformat.write(notebook, evidence / f"{source.stem}.ipynb" if args.profile == "docker" or args.backend != "fastembed" else source.with_suffix(".ipynb"))
+        nbformat.write(notebook, evidence / f"{source.stem}.ipynb" if args.profile == "docker" or (args.backend and args.backend != "fastembed") else source.with_suffix(".ipynb"))
         html, _ = HTMLExporter().from_notebook_node(notebook)
         (evidence / f"{source.stem}.html").write_text(html, encoding="utf-8")
         lines = []

@@ -162,7 +162,7 @@ class Searcher:
 
     def _search_semantic(self, query: str, top_k: int) -> list[SearchHit]:
         assert self.client is not None and self.embedder is not None
-        q_vec = next(self.embedder.embed([query])).tolist()
+        q_vec = next(self.embedder.embed_query(query)).tolist()
         result = self.client.query_points(
             collection_name=COLLECTION,
             query=q_vec,

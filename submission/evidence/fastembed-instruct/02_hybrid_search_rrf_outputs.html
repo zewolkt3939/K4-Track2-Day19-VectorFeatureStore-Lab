@@ -4,25 +4,24 @@
 h1{font-size:28px}h2{font-size:18px;color:#174c79}section{background:white;border:1px solid #ccd6e3;border-radius:8px;padding:10px 20px;margin:14px 0}
 pre{font:14px Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}a{color:#174c79}</style>
 <h1>02_hybrid_search_rrf</h1>
-<p>Minh chứng từ output notebook đã thực thi — Python 3.12 · Lite · BGE-small · dữ liệu tổng hợp.</p>
+<p>Minh chứng từ output notebook đã thực thi — Python 3.12 · fastembed-instruct · dữ liệu tổng hợp.</p>
 <p><a href="02_hybrid_search_rrf.html">Notebook đầy đủ</a> · <a href="02_hybrid_search_rrf.txt">Log gốc</a></p>
 <section><h2> — In [1]</h2><pre>D:\Ai Thuc chien\All Lab\K4-Track2-Day19-VectorFeatureStore-Lab\.venv\Lib\site-packages\tqdm\auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
   from .autonotebook import tqdm as notebook_tqdm
-</pre></section><section><h2>1. Reload corpus + build both indices — In [2]</h2><pre>Embedding backend: multilingual-mpnet sentence-transformers/paraphrase-multilingual-mpnet-base-v2 768
+</pre></section><section><h2>1. Reload corpus + build both indices — In [2]</h2><pre>Embedding backend: fastembed-instruct BAAI/bge-small-en-v1.5 384
 Qdrant runtime: memory collection: lab19
 BM25 + vector indices ready (1000 docs)
-</pre></section><section><h2>2. Per-mode search functions — In [3]</h2><pre>RRF candidate depth: 200 (selected on 30 separate development queries)
 </pre></section><section><h2>3. Implement Reciprocal Rank Fusion — In [4]</h2><pre>Query: co giãn linh hoạt theo nhu cầu sử dụng
   keyword top-3:  [&#x27;mobile_082&#x27;, &#x27;mobile_093&#x27;, &#x27;mobile_092&#x27;]
-  semantic top-3: [&#x27;cloud_064&#x27;, &#x27;cloud_087&#x27;, &#x27;mobile_077&#x27;]
-  hybrid top-3:   [&#x27;data_eng_080&#x27;, &#x27;cloud_087&#x27;, &#x27;cloud_040&#x27;]
+  semantic top-3: [&#x27;cloud_005&#x27;, &#x27;cloud_036&#x27;, &#x27;cloud_091&#x27;]
+  hybrid top-3:   [&#x27;cloud_016&#x27;, &#x27;mobile_082&#x27;, &#x27;cloud_005&#x27;]
 </pre></section><section><h2>4. Đánh giá trên golden set (50 queries) — In [5]</h2><pre>Precision@10 (avg over 50 queries):
   Keyword (BM25)   : 77.8%
-  Semantic (vector): 80.6%
-  Hybrid  (RRF=60) : 82.4%
-PASS — hybrid beats both
+  Semantic (vector): 73.6%
+  Hybrid  (RRF=60) : 77.2%
+WARN — hybrid does not beat both on this measured model/corpus
 </pre></section><section><h2>5. Slice theo loại query — In [6]</h2><pre>  type           n       kw     sem     hyb
-  exact         15   96.7%  88.0%  94.7%
-  paraphrase    15   33.3%  55.3%  50.7%
-  mixed         20   97.0%  94.0%  97.0%
+  exact         15   96.7%  86.7%  96.0%
+  paraphrase    15   33.3%  25.3%  31.3%
+  mixed         20   97.0% 100.0%  97.5%
 </pre></section></html>

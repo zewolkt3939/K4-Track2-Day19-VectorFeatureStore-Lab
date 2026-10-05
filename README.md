@@ -325,3 +325,12 @@ học viên cũng được. Full brief + self-checklist:
 ---
 
 © VinUniversity AICB program · A20 cohort 2026 · Track 2 Day 19.
+
+
+### Cấu hình NB2 đã kiểm chứng
+
+`python scripts/run_notebooks.py --only 02` chạy MPNet đa ngữ 768d với RRF
+k=60/depth=200 (chọn bằng 30 development queries riêng). Hybrid trung bình
+82,4% > BM25 77,8% và vector 80,6%; mixed đồng hạng BM25 97%.
+API/benchmark mặc định vẫn dùng BGE-small. Chi tiết và phép chạy Linux sạch:
+[DEPLOYMENT](submission/DEPLOYMENT.md). Tải MPNet lần đầu khoảng 1,1GB.

@@ -3,29 +3,27 @@ D:\Ai Thuc chien\All Lab\K4-Track2-Day19-VectorFeatureStore-Lab\.venv\Lib\site-p
   from .autonotebook import tqdm as notebook_tqdm
 
 --- Cell 3, execution 2 ---
-Embedding backend: multilingual-mpnet sentence-transformers/paraphrase-multilingual-mpnet-base-v2 768
+Embedding backend: fastembed-instruct BAAI/bge-small-en-v1.5 384
 
 Qdrant runtime: memory collection: lab19
 BM25 + vector indices ready (1000 docs)
 
 --- Cell 5, execution 3 ---
-RRF candidate depth: 200 (selected on 30 separate development queries)
-
 --- Cell 7, execution 4 ---
 Query: co giãn linh hoạt theo nhu cầu sử dụng
   keyword top-3:  ['mobile_082', 'mobile_093', 'mobile_092']
-  semantic top-3: ['cloud_064', 'cloud_087', 'mobile_077']
-  hybrid top-3:   ['data_eng_080', 'cloud_087', 'cloud_040']
+  semantic top-3: ['cloud_005', 'cloud_036', 'cloud_091']
+  hybrid top-3:   ['cloud_016', 'mobile_082', 'cloud_005']
 
 --- Cell 9, execution 5 ---
 Precision@10 (avg over 50 queries):
   Keyword (BM25)   : 77.8%
-  Semantic (vector): 80.6%
-  Hybrid  (RRF=60) : 82.4%
-PASS — hybrid beats both
+  Semantic (vector): 73.6%
+  Hybrid  (RRF=60) : 77.2%
+WARN — hybrid does not beat both on this measured model/corpus
 
 --- Cell 11, execution 6 ---
   type           n       kw     sem     hyb
-  exact         15   96.7%  88.0%  94.7%
-  paraphrase    15   33.3%  55.3%  50.7%
-  mixed         20   97.0%  94.0%  97.0%
+  exact         15   96.7%  86.7%  96.0%
+  paraphrase    15   33.3%  25.3%  31.3%
+  mixed         20   97.0% 100.0%  97.5%

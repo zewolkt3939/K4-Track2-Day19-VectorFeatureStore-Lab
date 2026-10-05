@@ -51,6 +51,8 @@ else
   fi
 fi
 
+python -m ipykernel install --sys-prefix --name lab19 --display-name "Lab 19 (.venv)"
+
 # ── 4. Convert Jupytext sources to .ipynb ───────────────────────────────
 # `_setup.py` is a helper module, not a notebook -- converting it produces
 # a _setup.ipynb that fails on execute. Only convert numbered notebooks.

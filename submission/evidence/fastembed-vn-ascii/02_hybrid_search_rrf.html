@@ -7796,7 +7796,7 @@ a.anchor-link {
 <!-- End of mermaid configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <main>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9435dafe">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a39099a5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7804,13 +7804,17 @@ a.anchor-link {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h1 id="NB2-%E2%80%94-Hybrid-Search:-BM25-+-Vector-+-RRF">NB2 — Hybrid Search: BM25 + Vector + RRF<a class="anchor-link" href="#NB2-%E2%80%94-Hybrid-Search:-BM25-+-Vector-+-RRF">¶</a></h1><p><strong>Stack:</strong> <code>rank-bm25</code> cho BM25 sparse + <code>qdrant-client</code> cho dense + RRF fusion.
 Maps to slide §3 (Hybrid Search Mechanics) + deliverable bullet 2.</p>
-<p>MPNet đa ngữ (768d), RRF k=60, depth=200: cấu hình đánh giá chất lượng.
-Depth được chọn trên 30 development queries riêng trước khi đọc golden set.
-Corpus và 50 golden queries gốc giữ nguyên. API latency vẫn dùng BGE-small.</p>
+<blockquote>
+<p>Hybrid search (BM25 + Vector + RRF $k=60$) là mặc định production 2026 —
+mọi vector DB lớn (Qdrant, Weaviate, OpenSearch, Milvus) đều có sẵn. Mức
+cải thiện điển hình so với dense-only là <strong>~10–15 điểm Recall@10</strong>, nhưng
+con số thật phụ thuộc corpus của bạn — nên notebook này <strong>đo trên golden set
+của chính lab</strong> thay vì trích một con số từ blog.</p>
+</blockquote>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=55c8e1e0">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=ef7895ad">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7850,7 +7854,7 @@ Corpus và 50 golden queries gốc giữ nguyên. API latency vẫn dùng BGE-sm
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=33bbcbf3">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=567f39ed">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7860,7 +7864,7 @@ Corpus và 50 golden queries gốc giữ nguyên. API latency vẫn dùng BGE-sm
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=1ff07be3">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=7a5b691f">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7875,7 +7879,7 @@ Corpus và 50 golden queries gốc giữ nguyên. API latency vẫn dùng BGE-sm
 <span class="n">bm25</span> <span class="o">=</span> <span class="n">BM25Okapi</span><span class="p">(</span><span class="n">tokenized</span><span class="p">)</span>
 
 <span class="c1"># Vector</span>
-<span class="n">embedder</span> <span class="o">=</span> <span class="n">Embedder</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"NB2_EMBEDDING_BACKEND"</span><span class="p">,</span> <span class="s2">"multilingual-mpnet"</span><span class="p">))</span>
+<span class="n">embedder</span> <span class="o">=</span> <span class="n">Embedder</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Embedding backend:"</span><span class="p">,</span> <span class="n">embedder</span><span class="o">.</span><span class="n">backend</span><span class="p">,</span> <span class="n">embedder</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span> <span class="n">embedder</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
 <span class="n">server_mode</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"QDRANT_MODE"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"server"</span>
 <span class="n">COLLECTION</span> <span class="o">=</span> <span class="s2">"lab19_nb2_"</span> <span class="o">+</span> <span class="n">embedder</span><span class="o">.</span><span class="n">backend</span> <span class="k">if</span> <span class="n">server_mode</span> <span class="k">else</span> <span class="s2">"lab19"</span>
@@ -7913,7 +7917,7 @@ Corpus và 50 golden queries gốc giữ nguyên. API latency vẫn dùng BGE-sm
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Embedding backend: multilingual-mpnet sentence-transformers/paraphrase-multilingual-mpnet-base-v2 768
+<pre>Embedding backend: fastembed-vn-ascii BAAI/bge-small-en-v1.5 384
 </pre>
 </div>
 </div>
@@ -7928,7 +7932,7 @@ BM25 + vector indices ready (1000 docs)
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c13350a5">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=595701ee">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7938,7 +7942,7 @@ BM25 + vector indices ready (1000 docs)
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=31843586">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=95fb5b6d">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7948,8 +7952,6 @@ BM25 + vector indices ready (1000 docs)
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">TOP_K</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">RRF_K</span> <span class="o">=</span> <span class="mi">60</span>   <span class="c1"># standard default — see slide §3</span>
-<span class="n">RRF_DEPTH</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"NB2_RRF_DEPTH"</span><span class="p">,</span> <span class="s2">"200"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"RRF candidate depth:"</span><span class="p">,</span> <span class="n">RRF_DEPTH</span><span class="p">,</span> <span class="s2">"(selected on 30 separate development queries)"</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">search_keyword</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">TOP_K</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -7959,7 +7961,7 @@ BM25 + vector indices ready (1000 docs)
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">search_semantic</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">TOP_K</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="n">q_vec</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">embedder</span><span class="o">.</span><span class="n">embed_query</span><span class="p">(</span><span class="n">query</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">q_vec</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">embedder</span><span class="o">.</span><span class="n">embed</span><span class="p">([</span><span class="n">query</span><span class="p">]))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query_points</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="n">COLLECTION</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">q_vec</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">top_k</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s2">"doc_id"</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">res</span><span class="o">.</span><span class="n">points</span><span class="p">]</span>
 </pre></div>
@@ -7967,21 +7969,8 @@ BM25 + vector indices ready (1000 docs)
 </div>
 </div>
 </div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>RRF candidate depth: 200 (selected on 30 separate development queries)
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3702d613">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=fe315ffa">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7992,14 +7981,14 @@ BM25 + vector indices ready (1000 docs)
 <p><code>rank_r(d)</code> là 1-based (vị trí đầu = 1, không phải 0). $k = 60$ là default công nghiệp.</p>
 <p><strong>Bước:</strong></p>
 <ol>
-<li>Pull top-200 từ mỗi retriever; chọn depth trên 30 development queries riêng.</li>
+<li>Pull top-50 từ BM25 và top-50 từ vector (depth = 5×top_k để có signal sâu).</li>
 <li>Cho mỗi doc, cộng <code>1 / (k + rank)</code> từ mỗi retriever (nếu doc không xuất hiện thì bỏ qua).</li>
 <li>Sort theo total score, trả về top-10 doc_id.</li>
 </ol>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=3a8168ae">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=ed6fec94">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8008,7 +7997,7 @@ BM25 + vector indices ready (1000 docs)
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">search_hybrid</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">TOP_K</span><span class="p">,</span> <span class="n">rrf_k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">RRF_K</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="n">depth</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">top_k</span><span class="p">,</span> <span class="n">RRF_DEPTH</span><span class="p">)</span>
+    <span class="n">depth</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">top_k</span> <span class="o">*</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
     <span class="n">kw_ids</span> <span class="o">=</span> <span class="n">search_keyword</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">depth</span><span class="p">)</span>
     <span class="n">sem_ids</span> <span class="o">=</span> <span class="n">search_semantic</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">depth</span><span class="p">)</span>
 
@@ -8044,15 +8033,21 @@ BM25 + vector indices ready (1000 docs)
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>Query: co giãn linh hoạt theo nhu cầu sử dụng
   keyword top-3:  ['mobile_082', 'mobile_093', 'mobile_092']
-  semantic top-3: ['cloud_064', 'cloud_087', 'mobile_077']
-  hybrid top-3:   ['data_eng_080', 'cloud_087', 'cloud_040']
+  semantic top-3: ['cloud_053', 'ai_ml_025', 'database_050']
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>  hybrid top-3:   ['cloud_016', 'mobile_082', 'cloud_053']
 </pre>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=37aad6f9">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=bbc0cf58">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8064,7 +8059,7 @@ precision-style để có signal rõ với 100 docs/topic.)</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=e0bfc507">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=11d65920">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8108,16 +8103,16 @@ precision-style để có signal rõ với 100 docs/topic.)</p>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>Precision@10 (avg over 50 queries):
   Keyword (BM25)   : 77.8%
-  Semantic (vector): 80.6%
-  Hybrid  (RRF=60) : 82.4%
-PASS — hybrid beats both
+  Semantic (vector): 75.2%
+  Hybrid  (RRF=60) : 77.8%
+WARN — hybrid does not beat both on this measured model/corpus
 </pre>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6be7def6">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1d1eed74">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8128,7 +8123,7 @@ PASS — hybrid beats both
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=848039ed">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=f1da70fc">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8164,32 +8159,41 @@ PASS — hybrid beats both
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>  type           n       kw     sem     hyb
-  exact         15   96.7%  88.0%  94.7%
-  paraphrase    15   33.3%  55.3%  50.7%
-  mixed         20   97.0%  94.0%  97.0%
+  exact         15   96.7%  94.7%  96.7%
+  paraphrase    15   33.3%  27.3%  29.3%
+  mixed         20   97.0%  96.5% 100.0%
 </pre>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5f6073a7">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ab2b4b78">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Di%E1%BB%85n-gi%E1%BA%A3i-k%E1%BA%BFt-qu%E1%BA%A3">Diễn giải kết quả<a class="anchor-link" href="#Di%E1%BB%85n-gi%E1%BA%A3i-k%E1%BA%BFt-qu%E1%BA%A3">¶</a></h3><p>MPNet + RRF depth 200: BM25 77,8%, vector 80,6%, hybrid 82,4% trung bình.
-Exact: BM25 96,7% dẫn đầu; paraphrase: vector 55,3% dẫn đầu.
-Mixed: hybrid và BM25 đồng hạng 97%, vector 94%. Không phải thắng tuyệt đối.
-BGE-M3 có vector mạnh hơn hybrid; xem evidence/docker/bge-m3 để đối chiếu.
-Development set nhỏ và golden đã được xem trong các thử nghiệm trước;
-kết quả không chứng minh khả năng tổng quát hóa ngoài bộ dữ liệu này.</p>
+<h3 id="Di%E1%BB%85n-gi%E1%BA%A3i-k%E1%BA%BFt-qu%E1%BA%A3">Diễn giải kết quả<a class="anchor-link" href="#Di%E1%BB%85n-gi%E1%BA%A3i-k%E1%BA%BFt-qu%E1%BA%A3">¶</a></h3><ul>
+<li><code>exact</code> queries chứa từ kỹ thuật verbatim trong corpus → BM25 mạnh, hybrid
+thường ngang bằng (keyword signal đã đủ mạnh).</li>
+<li><code>paraphrase</code> queries dùng từ Việt <strong>không</strong> xuất hiện verbatim trong docs
+→ cả BM25 và vector đều giảm điểm. Trên synthetic corpus 1000-doc với
+embedding model <code>BAAI/bge-small-en-v1.5</code> (English-trained), semantic
+recall trên Vietnamese paraphrases yếu (24-32%). <strong>Đổi sang <code>bge-m3</code>
+(full Docker path) sẽ giúp semantic thắng paraphrase queries</strong> — đây là
+teaching moment cho "embedding model choice matters".</li>
+<li><code>mixed</code> queries có cả từ exact + ý tưởng paraphrased → <strong>hybrid thắng rõ</strong>
+(~100% vs 97-98% pure modes). Đây là pattern production-relevant nhất
+vì user thật ít khi viết query 100% exact term hoặc 100% paraphrase.</li>
+</ul>
+<p>Hybrid thắng <em>trung bình</em> nhờ robust trên mọi kiểu query — đó là lý do
+production luôn default hybrid (deck §3, slide "Hybrid Search Mechanics").</p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e69f6edf">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d38c180c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>

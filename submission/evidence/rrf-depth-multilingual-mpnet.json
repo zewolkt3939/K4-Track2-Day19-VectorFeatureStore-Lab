@@ -1,0 +1,221 @@
+{
+  "model": "sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
+  "rrf_k": 60,
+  "development_queries": [
+    [
+      "cloud",
+      "AWS serverless",
+      "điều chỉnh tài nguyên khi lượng truy cập thay đổi",
+      "AWS serverless tiết kiệm tài nguyên khi ít người truy cập"
+    ],
+    [
+      "ai_ml",
+      "embedding LLM",
+      "biểu diễn câu thành dãy số để tìm nội dung tương tự",
+      "LLM tìm ngữ cảnh bằng biểu diễn câu thành dãy số"
+    ],
+    [
+      "security",
+      "OAuth JWT",
+      "ngăn kẻ lạ sử dụng tài khoản người dùng",
+      "OAuth kiểm tra quyền để ngăn người lạ sử dụng tài khoản"
+    ],
+    [
+      "database",
+      "SQL index",
+      "tăng tốc tìm bản ghi trong kho lưu trữ",
+      "SQL index tăng tốc tìm bản ghi trong bảng lớn"
+    ],
+    [
+      "networking",
+      "TCP DNS",
+      "định tuyến gói tin và phân giải tên máy",
+      "TCP DNS định tuyến gói tin giữa các máy"
+    ],
+    [
+      "devops",
+      "CI/CD rollback",
+      "đưa phiên bản mới lên hệ thống rồi quay lại bản cũ khi lỗi",
+      "CI/CD rollback khi phiên bản mới gây lỗi"
+    ],
+    [
+      "mobile",
+      "Android APK",
+      "ứng dụng điện thoại vẫn dùng được khi không có kết nối",
+      "Android APK hỗ trợ sử dụng khi mất kết nối"
+    ],
+    [
+      "frontend",
+      "React CSS",
+      "hiển thị trang nhanh hơn trên màn hình trình duyệt",
+      "React CSS làm trang hiển thị nhanh trong trình duyệt"
+    ],
+    [
+      "backend",
+      "API microservice",
+      "xử lý yêu cầu trùng mà không thực hiện tác vụ hai lần",
+      "API microservice ngăn tác vụ được thực hiện hai lần"
+    ],
+    [
+      "data_eng",
+      "Kafka ETL",
+      "xử lý dòng sự kiện và thay đổi cấu trúc dữ liệu",
+      "Kafka ETL xử lý dòng sự kiện khi cấu trúc dữ liệu thay đổi"
+    ]
+  ],
+  "development_count": 30,
+  "development_scores": {
+    "20": 0.78,
+    "50": 0.85,
+    "100": 0.8666666666666667,
+    "200": 0.8733333333333333,
+    "1000": 0.87
+  },
+  "selected_depth": 200,
+  "selection": "max development mean; ties prefer lower depth; selected before reading golden",
+  "golden_mean": {
+    "keyword": 0.778,
+    "semantic": 0.806,
+    "hybrid": 0.824
+  },
+  "golden_slices": {
+    "exact": {
+      "keyword": 0.9666666666666667,
+      "semantic": 0.88,
+      "hybrid": 0.9466666666666667
+    },
+    "paraphrase": {
+      "keyword": 0.3333333333333333,
+      "semantic": 0.5533333333333333,
+      "hybrid": 0.5066666666666667
+    },
+    "mixed": {
+      "keyword": 0.97,
+      "semantic": 0.94,
+      "hybrid": 0.97
+    }
+  },
+  "limitation": "Golden set has been inspected in previous lab work; this small dev set is not proof of out-of-domain generalisation.",
+  "golden_depth_sensitivity_not_holdout": {
+    "20": {
+      "mean": {
+        "keyword": 0.778,
+        "semantic": 0.806,
+        "hybrid": 0.794
+      },
+      "slices": {
+        "exact": {
+          "keyword": 0.9666666666666667,
+          "semantic": 0.88,
+          "hybrid": 0.9466666666666667
+        },
+        "paraphrase": {
+          "keyword": 0.3333333333333333,
+          "semantic": 0.5533333333333333,
+          "hybrid": 0.4266666666666667
+        },
+        "mixed": {
+          "keyword": 0.97,
+          "semantic": 0.94,
+          "hybrid": 0.955
+        }
+      }
+    },
+    "50": {
+      "mean": {
+        "keyword": 0.778,
+        "semantic": 0.806,
+        "hybrid": 0.802
+      },
+      "slices": {
+        "exact": {
+          "keyword": 0.9666666666666667,
+          "semantic": 0.88,
+          "hybrid": 0.9466666666666667
+        },
+        "paraphrase": {
+          "keyword": 0.3333333333333333,
+          "semantic": 0.5533333333333333,
+          "hybrid": 0.4533333333333333
+        },
+        "mixed": {
+          "keyword": 0.97,
+          "semantic": 0.94,
+          "hybrid": 0.955
+        }
+      }
+    },
+    "100": {
+      "mean": {
+        "keyword": 0.778,
+        "semantic": 0.806,
+        "hybrid": 0.818
+      },
+      "slices": {
+        "exact": {
+          "keyword": 0.9666666666666667,
+          "semantic": 0.88,
+          "hybrid": 0.9466666666666667
+        },
+        "paraphrase": {
+          "keyword": 0.3333333333333333,
+          "semantic": 0.5533333333333333,
+          "hybrid": 0.5066666666666667
+        },
+        "mixed": {
+          "keyword": 0.97,
+          "semantic": 0.94,
+          "hybrid": 0.955
+        }
+      }
+    },
+    "200": {
+      "mean": {
+        "keyword": 0.778,
+        "semantic": 0.806,
+        "hybrid": 0.824
+      },
+      "slices": {
+        "exact": {
+          "keyword": 0.9666666666666667,
+          "semantic": 0.88,
+          "hybrid": 0.9466666666666667
+        },
+        "paraphrase": {
+          "keyword": 0.3333333333333333,
+          "semantic": 0.5533333333333333,
+          "hybrid": 0.5066666666666667
+        },
+        "mixed": {
+          "keyword": 0.97,
+          "semantic": 0.94,
+          "hybrid": 0.97
+        }
+      }
+    },
+    "1000": {
+      "mean": {
+        "keyword": 0.778,
+        "semantic": 0.806,
+        "hybrid": 0.812
+      },
+      "slices": {
+        "exact": {
+          "keyword": 0.9666666666666667,
+          "semantic": 0.88,
+          "hybrid": 0.94
+        },
+        "paraphrase": {
+          "keyword": 0.3333333333333333,
+          "semantic": 0.5533333333333333,
+          "hybrid": 0.47333333333333333
+        },
+        "mixed": {
+          "keyword": 0.97,
+          "semantic": 0.94,
+          "hybrid": 0.97
+        }
+      }
+    }
+  }
+}

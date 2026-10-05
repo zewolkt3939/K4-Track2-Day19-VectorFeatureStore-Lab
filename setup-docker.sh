@@ -86,6 +86,7 @@ else
 fi
 
 # `_setup.py` is a helper module, not a notebook (see setup-lite.sh).
+python -m ipykernel install --sys-prefix --name lab19 --display-name "Lab 19 (.venv)"
 jupytext --to notebook --update notebooks/[0-9]*.py 2>/dev/null || jupytext --to notebook notebooks/[0-9]*.py
 
 # ── 5. .env for docker mode ─────────────────────────────────────────────

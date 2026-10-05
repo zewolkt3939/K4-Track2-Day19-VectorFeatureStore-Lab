@@ -94,8 +94,7 @@ Thí nghiệm model đa ngữ dùng đúng 50 câu hỏi gốc, cùng BM25, RRF 
 không sửa nhãn/golden set: [output](evidence/multilingual-small/02_hybrid_search_rrf.txt).
 Hybrid đạt80.6%, exact98%, paraphrase44%, mixed95%; vector paraphrase48%.
 BGE-small hybrid mixed100%, nhưng vector paraphrase24%.
-Chưa có một model duy nhất thắng đúng cả ba slice theo kỳ vọng rubric.
-Người chấm có thể trừ điểm slice nếu yêu cầu một cấu hình duy nhất.
+Kết quả này là thử nghiệm MiniLM trước cấu hình MPNet/depth 200 bên dưới.
 
 Lần đo API Docker đầu có hybrid P99 60.2ms khi ONNX để mặc định số luồng;
 đã lưu trong `docker-notebooks.log` và ghi ở đây, không coi là đạt ngưỡng.
@@ -118,3 +117,37 @@ Sau lần tạm dừng, đã mở lại stack và xác nhận
 [API ready/1000 docs](evidence/docker/api-resumed-health.json) và
 [response hybrid top5](evidence/docker/api-resumed-search.json).
 Collection BGE-M3 giữ nguyên1000 point/1024d sau khi mở lại Docker.
+
+
+## Kiểm chứng bổ sung: Linux sạch và cấu hình NB2 cuối
+
+Đã chạy trong container Python 3.12.15/Linux mới, không gắn venv/model cache
+của Windows: `bash setup-lite.sh`, `make benchmark`, `make test`,
+`make verify-lite` đều PASS. Test: 48 passed. Xem
+[trạng thái](evidence/clean-linux/status.txt),
+[setup](evidence/clean-linux/setup-lite.txt),
+[benchmark](evidence/clean-linux/benchmark.txt),
+[test](evidence/clean-linux/test.txt),
+[verify](evidence/clean-linux/verify-lite.txt).
+Benchmark Linux BGE-small hybrid P99 68,3ms trong lúc chạy các tác vụ CPU khác;
+không dùng số này để tuyên bố đạt <50ms. Kết quả API Docker 48,6ms là phép đo riêng.
+
+NB2 mặc định dùng MPNet đa ngữ 768d, RRF k=60, depth=200.
+Depth được chọn trên 30 development queries riêng, không sửa corpus/golden.
+[Quy trình chọn depth và toàn bộ thử nghiệm](evidence/rrf-depth-multilingual-mpnet.json).
+Chạy lại: `.venv/Scripts/python.exe scripts/run_notebooks.py --only 02`
+(Linux dùng `.venv/bin/python`). Lần đầu cần tải model khoảng 1,1GB.
+
+| Precision@10 | BM25 | Vector | Hybrid |
+|---|---:|---:|---:|
+| Trung bình | 77,8% | 80,6% | **82,4%** |
+| Exact | **96,7%** | 88,0% | 94,7% |
+| Paraphrase | 33,3% | **55,3%** | 50,7% |
+| Mixed | **97,0%** | 94,0% | **97,0%** |
+
+Hybrid vượt cả hai mode về trung bình; vector thắng paraphrase và BM25 thắng
+exact trong cùng một cấu hình. Mixed đồng hạng cao nhất với BM25: nếu rubric
+yêu cầu hybrid *vượt tuyệt đối* BM25 ở mixed, phần đó vẫn chưa đạt.
+Không ghép số đo của nhiều model để giả lập một cấu hình đạt đủ mọi điều kiện.
+Notebook/log cuối là nguồn số liệu chính; ảnh Lite cũ là bằng chứng lịch sử.
+API và benchmark mặc định vẫn dùng BGE-small để đánh giá latency riêng.

@@ -1,0 +1,46 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 790B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim-bookworm
+#2 DONE 1.9s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/5] FROM docker.io/library/python:3.12-slim-bookworm@sha256:54c85f3c47607a77f32adec749d3c81d1348bf25833671f512b26a9b6d778cb3
+#4 resolve docker.io/library/python:3.12-slim-bookworm@sha256:54c85f3c47607a77f32adec749d3c81d1348bf25833671f512b26a9b6d778cb3 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 5.89MB 0.5s done
+#5 DONE 0.5s
+
+#6 [2/5] RUN apt-get update && apt-get install -y --no-install-recommends make && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [3/5] WORKDIR /lab
+#7 CACHED
+
+#8 [4/5] COPY source.tar /tmp/source.tar
+#8 DONE 0.1s
+
+#9 [5/5] RUN tar -xf /tmp/source.tar -C /lab && rm /tmp/source.tar
+#9 DONE 0.4s
+
+#10 exporting to image
+#10 exporting layers
+#10 exporting layers 0.6s done
+#10 exporting manifest sha256:73c5f4313cef31900b3308255fd30fc2164d348c9b519a1dbd644f638e83df57 0.0s done
+#10 exporting config sha256:e23c9c3074a858c17e61cc54dc7a9f9a0b2e2ee1c3249cc031619419c7c2bee9 0.0s done
+#10 exporting attestation manifest sha256:40fe716982fe68ab0f37b21b262cdf5522c3ca50c746f66e05fe2a3235b0fb43 0.0s done
+#10 exporting manifest list sha256:6a64b0d0958176d0705d598a6367b7572189af229a958676f16f652073fdcc97 0.0s done
+#10 naming to docker.io/library/lab19-clean-check:latest done
+#10 unpacking to docker.io/library/lab19-clean-check:latest
+#10 unpacking to docker.io/library/lab19-clean-check:latest 0.2s done
+#10 DONE 0.9s
+
+View build details: docker-desktop://dashboard/build/default/default/s4dg5v8n706vtz1uaqnd65kef
